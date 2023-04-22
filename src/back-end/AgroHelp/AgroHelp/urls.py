@@ -38,5 +38,10 @@ urlpatterns = [
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='core-swagger-ui'),
     # path('', include('core.urls')),
-    path('api/', include('core.api_urls')),
+    # path('api/', include('core.api_urls')),
+    # path('api/', include('accounts.api_urls')),
+    path("api/",include([
+        path("account/",include('accounts.api_urls')),
+        path("core/",include('core.api_urls')),
+    ]))
 ]
