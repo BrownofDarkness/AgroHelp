@@ -55,7 +55,7 @@ RUN apk update && apk add --no-cache geos-dev
 
 # To enable spatialite in sqlite database
 
- RUN apk add --no-cache libsqlite3-mod-spatialite
+ # RUN apk add libsqlite3-mod-spatialite
 
 ENV PYTHONUNBUFFERED=1
 
