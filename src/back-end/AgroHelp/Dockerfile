@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 RUN apk --update add gcc build-base libffi-dev
 
-RUN apk update && apk add binutils libproj-dev gdal-bin
+RUN apk update && apk add binutils libproj-dev
 
 RUN apk add libgdal-dev
 
