@@ -8,16 +8,14 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 RUN apk --update add gcc build-base libffi-dev
 
-RUN apt-get update && apt-get install -y binutils libproj-dev gdal-bin
+RUN apk update && apk add -y binutils libproj-dev gdal-bin
 
-RUN apt-get install -y libgdal-dev
+RUN apk add -y libgdal-dev
 
-RUN pip install GDAL==3.2.2.1
+RUN apk update && \
+    apk add --no-cache gdal-dev
 
-# Install GDAL dependencies
-RUN apt-get install -y libgdal-dev g++ --no-install-recommends && \
-    apt-get clean -y
-
+RUN pip add GDAL==3.2.2.1
 
 
 # Update C env vars so compiler can find gdal
