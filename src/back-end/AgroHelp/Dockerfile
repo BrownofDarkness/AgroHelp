@@ -37,7 +37,7 @@ ENV C_INCLUDE_PATH=/usr/include/gdal
 # Java Topology Suite.
 
 
-RUN apk add libgeos++
+RUN apk update && apk add --no-cache geos-dev
 
 # PROJ.4
 
@@ -55,7 +55,7 @@ RUN apk add proj-bin
 
 # To enable spatialite in sqlite database
 
-RUN apk add libsqlite3-mod-spatialite
+ RUN apk add --no-cache libsqlite3-mod-spatialite
 
 ENV PYTHONUNBUFFERED=1
 
