@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 RUN apk --update add gcc build-base libffi-dev
 
-RUN apk update && apk add binutils libproj-dev
+RUN apk update && apk add binutils
 
 RUN apk add libgdal-dev
 
@@ -31,7 +31,7 @@ ENV C_INCLUDE_PATH=/usr/include/gdal
 # On Debian/Ubuntu, you are advised to install the following packages which will install, 
 # directly or by dependency, the required geospatial libraries:
 
-RUN apk add binutils libproj-dev gdal-bin
+# RUN apk add binutils libproj-dev gdal-bin
 
 # GEOS API
 
