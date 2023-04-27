@@ -8,6 +8,22 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 RUN apk --update add gcc build-base libffi-dev
 
+RUN apt-get update && apt-get install -y binutils libproj-dev gdal-bin
+
+RUN apt-get install -y libgdal-dev
+
+RUN pip install GDAL==3.2.2.1
+
+# Install GDAL dependencies
+RUN apt-get install -y libgdal-dev g++ --no-install-recommends && \
+    apt-get clean -y
+
+
+
+# Update C env vars so compiler can find gdal
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
+
 # This are geo django requirements
 
 
