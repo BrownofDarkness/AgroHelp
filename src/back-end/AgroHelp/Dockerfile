@@ -44,7 +44,7 @@ RUN apk update && apk add --no-cache geos-dev
 # PROJ is a generic coordinate transformation software, that transforms geospatial coordinates from one coordinate reference system (CRS) to another. On Ubuntu the APT package manager is used:
 
 
-RUN apk add proj-bin
+# RUN apk add proj-bin
 
 
 # GDAL API
