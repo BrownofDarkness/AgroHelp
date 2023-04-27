@@ -15,7 +15,7 @@ RUN apk update && apk add binutils
 RUN apk update && \
     apk add --no-cache gdal-dev
 
-RUN pip install GDAL==3.2.2.1
+RUN pip install https://netix.dl.sourceforge.net/project/gdal-wheels-for-linux/GDAL-3.1.4-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl
 
 
 # Update C env vars so compiler can find gdal
