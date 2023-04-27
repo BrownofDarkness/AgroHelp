@@ -15,8 +15,6 @@ RUN apk update && apk add binutils
 RUN apk update && \
     apk add --no-cache gdal-dev
 
-RUN pip install https://netix.dl.sourceforge.net/project/gdal-wheels-for-linux/GDAL-3.1.4-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl
-
 
 # Update C env vars so compiler can find gdal
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
@@ -53,7 +51,7 @@ RUN apk add proj-bin
 
 # GDAL stands for Geospatial Data Abstraction Library, and is a veritable “Swiss army knife” of GIS data functionality.
 
-RUN apk add gdal-bin
+# RUN apk add gdal-bin
 
 # To enable spatialite in sqlite database
 
