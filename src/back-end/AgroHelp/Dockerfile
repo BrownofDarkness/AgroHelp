@@ -10,7 +10,7 @@ RUN apk --update add gcc build-base libffi-dev
 
 RUN apk update && apk add binutils
 
-RUN apk add libgdal-dev
+# RUN apk add libgdal-dev
 
 RUN apk update && \
     apk add --no-cache gdal-dev
