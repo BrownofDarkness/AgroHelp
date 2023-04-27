@@ -15,7 +15,7 @@ RUN apk update && apk add binutils
 RUN apk update && \
     apk add --no-cache gdal-dev
 
-RUN pip add GDAL==3.2.2.1
+RUN pip install GDAL==3.2.2.1
 
 
 # Update C env vars so compiler can find gdal
