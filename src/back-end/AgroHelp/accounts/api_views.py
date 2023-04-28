@@ -38,19 +38,24 @@ class LoginViewSet(CreateModelMixin, GenericViewSet):
 
 class UserViewSet(CreateModelMixin, ListModelMixin, UpdateModelMixin, RetrieveModelMixin, GenericViewSet):
     serializer_class = UserSerializer
-    permission_classes = {
-        'get': [IsAuthenticated],
-        'post': [AllowAny],
-    }
+    
+    def get_permissions(self):
+        permission_classes = []
+        if self.request.method == 'POST':
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
     def get_serializer_class(self):
         return UserSerializer
 
     def get_queryset(self):
         if not self.request.user.is_anonymous:
-            return self.request.user
-        else:
-            return "your are not authenticated"
+            return [self.request.user,]
+    
+    
+
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
