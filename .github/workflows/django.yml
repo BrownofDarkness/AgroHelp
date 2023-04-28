@@ -29,8 +29,7 @@ jobs:
           libgeos-dev \
           libproj-dev \
           gdal-bin \
-          libsqlite3-mod-spatialite \
-          && rm -rf /var/lib/apt/lists/*
+          libsqlite3-mod-spatialite
           python -m pip install --upgrade pip
           cd src/back-end/AgroHelp
           pip install -r requirements.txt
