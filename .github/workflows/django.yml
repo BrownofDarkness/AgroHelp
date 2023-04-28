@@ -22,9 +22,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install Dependencies
         run: |
-          ps -e | grep -e apt -e adept | grep -v grep
-          apt-get update && \
-          apt-get install -y --no-install-recommends \
+          sudo apt-get update && \
+          sudo apt-get install -y --no-install-recommends \
           build-essential \
           libpq-dev \
           libgeos-dev \
