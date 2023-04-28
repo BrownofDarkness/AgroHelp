@@ -51,6 +51,6 @@ docker compose up
 
 
 ## How to configure geo django
-[how to install](https://kitcharoenp.github.io/gis/2018/06/12/geodjango_installation.html)
+[How to install](https://kitcharoenp.github.io/gis/2018/06/12/geodjango_installation.html)
 
 [How to fix spatialite problem](https://code.djangoproject.com/ticket/32935)
