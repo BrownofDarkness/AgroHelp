@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'drf_yasg',
     'rest_framework',
+    'rest_framework_gis',
     'rest_framework.authtoken',
     'leaflet',
 
@@ -166,7 +167,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSIONS_CLASSES': (
         'rest_framework.permissions.IsAuthenticated'
     ),
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    # 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework_gis.schema.GeoFeatureAutoSchema',
 
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }

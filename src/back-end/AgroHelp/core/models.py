@@ -28,10 +28,14 @@ class SoilCulture(models.Model):
 
     soil = models.ForeignKey(
         Soil, on_delete=models.CASCADE, related_name='soil_culture')
-    culture = models.ForeignKey(Culture, on_delete=models.CASCADE)
+    culture = models.ForeignKey(
+        Culture, on_delete=models.CASCADE, related_name='soil_culture')
 
     def __str__(self) -> str:
         return f"{self.culture} best in {self.soil}"
+
+    class Meta:
+        unique_together = ('soil', 'culture',)
 
 
 class Parcel(models.Model):
@@ -61,3 +65,8 @@ class SoilArea(models.Model):
 
     def __str__(self) -> str:
         return f"{self.soil}"
+
+
+class AgriculturePractice(models.Model):
+    culture = models.ForeignKey(
+        Culture, on_delete=models.CASCADE, related_name='agriculture_practice')
