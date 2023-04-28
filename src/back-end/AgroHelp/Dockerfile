@@ -34,11 +34,7 @@ RUN python -m pip install -r requirements.txt
 
 RUN python manage.py makemigrations
 
-<<<<<<< HEAD
-Run python ./manage.py shell -c "import django;django.db.connection.cursor().execute('SELECT InitSpatialMetaData(1);')";
-=======
 RUN python ./manage.py shell -c "import django;django.db.connection.cursor().execute('SELECT InitSpatialMetaData(1);')";
->>>>>>> 429569d9dcf0e292570c05fe57b248b2801f4824
 
 RUN python manage.py migrate
 
@@ -46,8 +42,4 @@ RUN python manage.py migrate
 EXPOSE 8000
 
 # Start the app
-<<<<<<< HEAD
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-=======
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
->>>>>>> 429569d9dcf0e292570c05fe57b248b2801f4824
