@@ -25,7 +25,7 @@ RUN apt-get update && \
 # Copy requirements file and install dependencies
 RUN python -m pip install --upgrade pip
 
-RUN python -m pip install -requirements.txt
+RUN python -m pip install -r requirements.txt
 
 # Copy the Django project into the container
 
