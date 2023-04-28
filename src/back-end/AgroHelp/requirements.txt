@@ -9,6 +9,7 @@ django-cors-headers==3.14.0
 django-filter==23.1
 django-leaflet==0.28.3
 djangorestframework==3.14.0
+djangorestframework-gis==1.0
 drf-yasg==1.21.5
 idna==3.4
 inflection==0.5.1
