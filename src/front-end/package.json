@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "agro-help",
   "version": "1.0.0",
@@ -32,3 +33,35 @@
   },
   "private": true
 }
+=======
+{
+  "name": "agro-help",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@react-navigation/material-bottom-tabs": "^6.2.15",
+    "@react-navigation/native": "^6.1.6",
+    "@react-navigation/stack": "^6.3.16",
+    "expo": "~48.0.9",
+    "expo-status-bar": "~1.4.4",
+    "prop-types": "^15.8.1",
+    "react": "18.2.0",
+    "react-native": "0.71.6",
+    "react-native-gesture-handler": "~2.9.0",
+    "react-native-paper": "^5.7.0",
+    "react-native-safe-area-context": "4.5.0",
+    "react-native-screens": "~3.20.0",
+    "react-native-vector-icons": "^9.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0"
+  },
+  "private": true
+}
+>>>>>>> 3880fc5a3bb04beaa287ce7d4a83ca7be2edc793

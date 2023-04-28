@@ -51,8 +51,7 @@ class UserViewSet(CreateModelMixin, ListModelMixin, UpdateModelMixin, RetrieveMo
         return UserSerializer
 
     def get_queryset(self):
-        if not self.request.user.is_anonymous:
-            return [self.request.user,]
+        return [self.request.user,]
     
     
 
