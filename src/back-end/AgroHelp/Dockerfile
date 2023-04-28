@@ -5,8 +5,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Create a directory for the app
-# RUN mkdir /app
-WORKDIR /django_container
+RUN mkdir /app
+WORKDIR /app
 
 # Install dependencies
 RUN apt-get update && \
@@ -21,14 +21,12 @@ RUN apt-get update && \
 
 # Copy requirements file and install dependencies
 COPY requirements.txt /app/
-
-RUN python -m pip install --upgrade pip
-
-RUN pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install -requirements.txt
 
 # Copy the Django project into the container
-COPY . .
+COPY . /app/
 
+RUN python -m pip install --upgrade pip
 
 # Set up the SQLite database
 
