@@ -21,12 +21,14 @@ RUN apt-get update && \
 
 # Copy requirements file and install dependencies
 COPY requirements.txt /app/
+
+RUN python -m pip install --upgrade pip
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the Django project into the container
 COPY . .
 
-RUN python -m pip install --upgrade pip
 
 # Set up the SQLite database
 
