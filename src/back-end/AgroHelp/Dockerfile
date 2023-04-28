@@ -1,67 +1,45 @@
-# For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.11.1-alpine
+FROM python:3.8-slim-buster
 
 EXPOSE 8000
 
-# Keeps Python from generating .pyc files in the container
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
-
-RUN apk --update add gcc build-base libffi-dev
-
-RUN apk update && apk add binutils
-
-# RUN apk add libgdal-dev
-
-RUN apk update && \
-    apk add --no-cache gdal-dev
-
-
-# Update C env vars so compiler can find gdal
-ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
-ENV C_INCLUDE_PATH=/usr/include/gdal
-
-# This are geo django requirements
-
-
-
-# Installing Geospatial Libraries
-
-# On Debian/Ubuntu, you are advised to install the following packages which will install, 
-# directly or by dependency, the required geospatial libraries:
-
-# RUN apk add binutils libproj-dev gdal-bin
-
-# GEOS API
-
-# GEOS stands for Geometry Engine - Open Source, and is a C++ library, ported from the 
-# Java Topology Suite.
-
-
-RUN apk update && apk add --no-cache geos-dev
-
-# PROJ.4
-
-# PROJ is a generic coordinate transformation software, that transforms geospatial coordinates from one coordinate reference system (CRS) to another. On Ubuntu the APT package manager is used:
-
-
-# RUN apk add proj-bin
-
-
-# GDAL API
-
-# GDAL stands for Geospatial Data Abstraction Library, and is a veritable “Swiss army knife” of GIS data functionality.
-
-# RUN apk add gdal-bin
-
-# To enable spatialite in sqlite database
-
- # RUN apk add libsqlite3-mod-spatialite
-
 ENV PYTHONUNBUFFERED=1
 
-
-WORKDIR /django_backend
+# Create a directory for the app
+# RUN mkdir /app
+WORKDIR /django_container
 COPY . .
 
-# Install pip requirements
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    libgeos-dev \
+    libproj-dev \
+    gdal-bin \
+    libsqlite3-mod-spatialite \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements file and install dependencies
 RUN python -m pip install --upgrade pip
+
+RUN python -m pip install -r requirements.txt
+
+# Copy the Django project into the container
+
+
+# Set up the SQLite database
+
+RUN python manage.py makemigrations
+
+Run python ./manage.py shell -c "import django;django.db.connection.cursor().execute('SELECT InitSpatialMetaData(1);')";
+
+RUN python manage.py migrate
+
+# Expose the port the app runs on
+EXPOSE 8000
+
+# Start the app
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

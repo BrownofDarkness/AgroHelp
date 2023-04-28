@@ -21,27 +21,29 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="AgroHelp API",
-      default_version='v1',
-      description="application d'aide à la décision agricole",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="contact@snippets.local"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
-   permission_classes=[permissions.AllowAny],
+    openapi.Info(
+        title="AgroHelp API",
+        default_version='v1',
+        description="application d'aide à la décision agricole",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="contact@snippets.local"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='core-swagger-ui'),
+    re_path(r'^swagger(?P<format>\.json|\.yaml)$',
+            schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('api/docs/', schema_view.with_ui('swagger',
+         cache_timeout=0), name='core-swagger-ui'),
     # path('', include('core.urls')),
     # path('api/', include('core.api_urls')),
     # path('api/', include('accounts.api_urls')),
-    path("api/",include([
-        path("account/",include('accounts.api_urls')),
-        path("core/",include('core.api_urls')),
+    path("api/", include([
+        path("account/", include('accounts.api_urls')),
+        path("core/", include('core.api_urls')),
     ]))
 ]
