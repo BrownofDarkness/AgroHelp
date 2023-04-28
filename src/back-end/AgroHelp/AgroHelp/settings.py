@@ -37,12 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',  # GeoDjango,
 
     # Third party apps
 
     'drf_yasg',
     'rest_framework',
     'rest_framework.authtoken',
+    'leaflet',
 
     # Local Apps
 
@@ -89,7 +91,8 @@ WSGI_APPLICATION = 'AgroHelp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        "ENGINE": "django.contrib.gis.db.backends.spatialite",
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
@@ -212,3 +215,11 @@ if DEBUG:
             "channels.layers.InMemoryChannelLayer",
         }
     }
+
+# Leaflet configurations
+
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (3.866667, 11.516667),
+    'DEFAULT_ZOOM': 5,
+    'ATTRIBUTION_PREFIX': '<a target="_blank" href="https://github.com/tomdieu">Powered By ivantom</a>'
+}
