@@ -34,7 +34,7 @@ RUN python -m pip install -r requirements.txt
 
 RUN python manage.py makemigrations
 
-Run python ./manage.py shell -c "import django;django.db.connection.cursor().execute('SELECT InitSpatialMetaData(1);')";
+RUN python ./manage.py shell -c "import django;django.db.connection.cursor().execute('SELECT InitSpatialMetaData(1);')";
 
 RUN python manage.py migrate
 
