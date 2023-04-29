@@ -9,8 +9,8 @@ from .models import Culture, Soil, SoilArea, CultureParcel, Parcel, SoilCulture
 
 @admin.register(Culture)
 class CultureAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nom')
-    search_fields = ('nom',)
+    list_display = ('id', 'name')
+    search_fields = ('name',)
 
 
 @admin.register(Soil)
