@@ -36,4 +36,6 @@ class CultureParcelAdmin(admin.ModelAdmin):
 
 @admin.register(SoilArea)
 class SoilAreaAdmin(LeafletGeoAdmin):
+    map_height = '1000px'
+    map_width = 'min(calc(250vw - 30px),2000px)'
     list_display = ('id', 'soil', 'polygon')

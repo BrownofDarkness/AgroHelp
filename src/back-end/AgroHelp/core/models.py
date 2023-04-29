@@ -9,7 +9,7 @@ User = get_user_model()
 
 
 class Soil(models.Model):
-    type = models.CharField(max_length=20, unique=True)
+    type = models.CharField(max_length=255, unique=True)
     composition = models.CharField(max_length=255)
 
     def __str__(self):
@@ -39,8 +39,7 @@ class SoilCulture(models.Model):
 
 
 class Parcel(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='parcels')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='parcels')
     location = models.PointField(srid=4326)
     area = models.FloatField(help_text='in square meter')
     name = models.CharField(max_length=255)
