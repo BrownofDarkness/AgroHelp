@@ -23,7 +23,7 @@ class SoilSerializer(sz.ModelSerializer):
 
     def get_composition(self, soil: Soil):
 
-        return soil.composition.split(',')
+        return soil.composition.split('|')
 
 
 class CultureSerializer(sz.ModelSerializer):
@@ -39,7 +39,7 @@ class CultureSerializer(sz.ModelSerializer):
 
         queryset = Soil.objects.filter(soil_culture__soil=obj)
 
-        return SoilSerializer(queryset).data
+        return SoilSerializer(queryset, many=True).data
 
 
 class SoilAreaSerializer(serializers.GeoFeatureModelSerializer):
