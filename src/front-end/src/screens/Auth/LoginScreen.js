@@ -33,7 +33,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const onForgotPasswordPressed = () => {
-    console.warn("Forgot Password");
+    navigation.navigate("Home");
   };
   const onregisterPressed = () => {
     navigation.navigate("Register");

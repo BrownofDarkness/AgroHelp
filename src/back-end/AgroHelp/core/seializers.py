@@ -1,6 +1,6 @@
 
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from .models import Soil, SoilArea, Culture, SoilCulture, Parcel, CultureParcel
+from .models import Soil, SoilArea, Culture, SoilCulture, Parcel, CultureParcel, AgriculturePractice
 from rest_framework import serializers as sz
 from rest_framework_gis import serializers
 
@@ -50,3 +50,10 @@ class SoilAreaSerializer(serializers.GeoFeatureModelSerializer):
         model = SoilArea
         geo_field = 'polygon'
         fields = ('soil', 'polygon')
+
+
+class AgriculturePracticeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AgriculturePractice
+        fields = '__all__'

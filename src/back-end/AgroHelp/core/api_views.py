@@ -13,7 +13,7 @@ from rest_framework.authtoken.models import Token
 
 
 from .seializers import SoilSerializer, SoilAreaSerializer, ParcelSerializer, CultureSerializer
-from .models import Soil, SoilArea, Parcel, Culture, SoilCulture
+from .models import Soil, SoilArea, Parcel, Culture, SoilCulture, AgriculturePractice
 
 User = get_user_model()
 
@@ -23,41 +23,41 @@ class SoilAreaViewSet(CreateModelMixin, UpdateModelMixin, DestroyModelMixin, Lis
     serializer_class = SoilAreaSerializer
 
     queryset = SoilArea.objects.all()
-    
+
+
 class ParcelViewSet(CreateModelMixin, DestroyModelMixin, ListModelMixin, UpdateModelMixin, RetrieveModelMixin, GenericViewSet):
     serializer_class = ParcelSerializer
     permission_classes = [IsAuthenticated]
-    
+
     def get_queryset(self):
         user = self.request.user
         queryset = Parcel.objects.filter(user=user.id)
         return queryset
-    
-    
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
         return Response(ParcelSerializer(instance).data, status=201)
-    
+
     def update(self, request, *args, **kwargs):
         instance: Parcel = self.get_object()
         user = self.request.user
         if instance.user == user:
             return super().update(request, *args, **kwargs)
         return JsonResponse({'detail': 'you are not allowed to update this parcel'})
-    
+
     def delete(self, request, *args, **kwargs):
         instance: Parcel = self.get_object()
         user = self.request.user
         if instance.user == user:
             return super().delete(request, *args, **kwargs)
         return JsonResponse({'detail': 'you are not allowed to delete this parcel'})
-    
-    
+
+
 class CultureViewSet(DestroyModelMixin, ListModelMixin, UpdateModelMixin, RetrieveModelMixin, GenericViewSet):
     serializer_class = CultureSerializer
-    
+
     def get_permissions(self):
         permission_classes = []
         if self.request.method == 'PUT' or self.request.method == 'DELETE' or self.request.method == 'PATCH':
@@ -65,35 +65,44 @@ class CultureViewSet(DestroyModelMixin, ListModelMixin, UpdateModelMixin, Retrie
         else:
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
-    
-    
+
     def get_queryset(self):
         id = self.request.id
         soil_cult = SoilCulture.objects.filter(soil=id)
         queryset = []
         for item in soil_cult:
             queryset.append(Culture.objects.get(id=item.culture.id))
-            
+
         return queryset
-    
+
     @action(methods=['get'], detail=True)
     def me(self, request):
         instance = self.get_object()
         return Response(CultureSerializer(instance).data)
-    
-    
+
     def update(self, request, *args, **kwargs):
         instance: Parcel = self.get_object()
         user = self.request.user
         if instance.user == user:
             return super().update(request, *args, **kwargs)
         return JsonResponse({'detail': 'you are not allowed to update this parcel'})
-    
+
     def delete(self, request, *args, **kwargs):
         instance: Parcel = self.get_object()
         user = self.request.user
         if instance.user == user:
             return super().delete(request, *args, **kwargs)
         return JsonResponse({'detail': 'you are not allowed to delete this parcel'})
-    
-    
+
+
+class CulturePractiseViewSet(DestroyModelMixin, ListModelMixin, UpdateModelMixin, RetrieveModelMixin, GenericViewSet):
+
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Here i will get the agricultural practise for a given culture passed in the
+        # query parameter as
+        culture = self.request.query_params.get('culture', None)
+        if self.request.query_params.get('culture'):
+            culture = Culture.objects.filter(name=culture)
+        return AgriculturePractice.objects.all()

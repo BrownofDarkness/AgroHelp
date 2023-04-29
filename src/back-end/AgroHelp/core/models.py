@@ -18,10 +18,10 @@ class Soil(models.Model):
 
 class Culture(models.Model):
 
-    nom = models.CharField(max_length=20)
+    name = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.nom
+        return self.name
 
 
 class SoilCulture(models.Model):
@@ -39,7 +39,8 @@ class SoilCulture(models.Model):
 
 
 class Parcel(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='parcels')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='parcels')
     location = models.PointField(srid=4326)
     area = models.FloatField(help_text='in square meter')
     name = models.CharField(max_length=255)
@@ -69,3 +70,4 @@ class SoilArea(models.Model):
 class AgriculturePractice(models.Model):
     culture = models.ForeignKey(
         Culture, on_delete=models.CASCADE, related_name='agriculture_practice')
+    practise = models.TextField()
