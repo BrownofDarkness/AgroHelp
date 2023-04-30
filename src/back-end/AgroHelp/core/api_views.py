@@ -38,7 +38,7 @@ class ParcelViewSet(CreateModelMixin, DestroyModelMixin, ListModelMixin, UpdateM
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
-        return Response(ParcelSerializer(instance).data, status=201)
+        return Response({"data":ParcelSerializer(instance).data,"success":True}, status=201)
 
     def update(self, request, *args, **kwargs):
         instance: Parcel = self.get_object()
