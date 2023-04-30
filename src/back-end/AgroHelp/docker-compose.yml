@@ -11,7 +11,7 @@ services:
   #Django application
 
   backend:
-    image: AgroHelp
+    image: agro_help
     restart: unless-stopped
     build: 
       context: .
