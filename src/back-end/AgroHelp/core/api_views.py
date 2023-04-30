@@ -67,6 +67,7 @@ class CultureViewSet(DestroyModelMixin, ListModelMixin, UpdateModelMixin, Retrie
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
+        # 
         id = self.request.id
         soil_cult = SoilCulture.objects.filter(soil=id)
         queryset = []
