@@ -18,6 +18,8 @@ export default class ApiService {
     const url = this.endPoint + "/account/user/";
     const res = await fetch(url, {
       method: "POST",
+      body: data,
+
       headers: {
         "Content-Type": "application/json",
       },
@@ -27,5 +29,18 @@ export default class ApiService {
 
   static async getUserParcel(data) {
     // const
+  }
+
+  static async saveUserParcel(data, token) {
+    const url = this.endPoint + "/core/parcel/";
+    const res = await fetch(url, {
+      method: "POST",
+      body: data,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${token}`,
+      },
+    });
+    return res;
   }
 }
