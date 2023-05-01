@@ -14,5 +14,5 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build the Account Docker Service image
         run: |
-          cd src/back-end/microservices/src/back-end/microservices/account_service
+          cd src/back-end/microservices/account_service
           docker build . --file Dockerfile --tag my-image-name:$(date +%s)
