@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Create a directory for the app
 # RUN mkdir /app
-WORKDIR /django_container
+WORKDIR /agrohelp_container
 COPY . .
 
 # Install dependencies
