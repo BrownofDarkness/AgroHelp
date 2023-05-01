@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-z4gfo8!-yh(fw4v3&wy)4v%(01d@wd0)7lrrzx@9u-n@yas9v3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     # Third party apps
     'drf_yasg',
     'rest_framework',
+    'rest_framework.authtoken',
+    "corsheaders",
+    'adrf',
     # Local apps
     'account',
 ]
@@ -57,6 +60,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'account_service.urls'
+
+AUTH_USER_MODEL = 'account.User'
 
 TEMPLATES = [
     {

@@ -3,16 +3,16 @@ version: '3.8'
 services:
   
   # Redis image
-  redis:
-    image: redis:7.0.6-alpine
-    container_name: redis
-    expose:
-      - 6379
+  # redis:
+  #   image: redis:7.0.6-alpine
+  #   container_name: redis
+  #   expose:
+  #     - 6379
 
 
   # Django application
   account_service:
-    image: account_service
+    image: agrohelp/account_service
     restart: unless-stopped
     build:
       context: .
