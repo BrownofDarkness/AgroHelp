@@ -1,4 +1,4 @@
-name: Account Service Image
+name: Account Micro Service Docker Image
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout
+      - uses: actions/checkout@v3
       - name: Build the Account Docker Service image
         run: |
           cd src/back-end/microservices/src/back-end/microservices/account_service
