@@ -37,9 +37,10 @@ class SoilCulture(models.Model):
         unique_together = ('soil', 'culture',)
 
 
-class CulturePractice(models.Model):
+class AgriCulturePractice(models.Model):
+    name = models.CharField(help_text='Name of the agricultural practice')
     culture = models.ForeignKey(
-        Culture, on_delete=models.CASCADE, related_name='culture_practice')
+        Culture, on_delete=models.CASCADE, related_name='agriculture_practice')
     practise = models.TextField()
 
 
