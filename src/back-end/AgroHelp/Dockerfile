@@ -4,14 +4,6 @@ FROM python:3.8-slim-buster
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-<<<<<<< HEAD
-=======
-# Create a directory for the app
-# RUN mkdir /app
-WORKDIR /agrohelp_container
-COPY . .
->>>>>>> 9264ce90c8f9336109c89e94b6ae1c7f5db693e7
-
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -28,9 +20,9 @@ RUN apt-get update && \
 
 # Create a directory for the app
 # RUN mkdir /app
-WORKDIR /django_container
-COPY ./requirements.txt /django_container/
-RUN python -m pip install --no-cache-dir -r /django_container/requirements.txt
+WORKDIR /agrohelp_container
+COPY ./requirements.txt /agrohelp_container/
+RUN python -m pip install --no-cache-dir -r /agrohelp_container/requirements.txt
 COPY . .
 
 # Copy the Django project into the container
@@ -47,5 +39,3 @@ RUN python manage.py migrate
 # Expose the port the app runs on
 EXPOSE 8000
 
-# Start the app
-# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
