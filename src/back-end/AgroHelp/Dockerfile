@@ -1,15 +1,9 @@
 FROM python:3.8-slim-buster
 
-EXPOSE 8000
-
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Create a directory for the app
-# RUN mkdir /app
-WORKDIR /django_container
-COPY . .
 
 # Install dependencies
 RUN apt-get update && \
@@ -20,12 +14,17 @@ RUN apt-get update && \
     libproj-dev \
     gdal-bin \
     libsqlite3-mod-spatialite \
-    && rm -rf /var/lib/apt/lists/*
-
+    && rm -rf /var/lib/apt/lists/* \
+    && python -m pip install --no-cache-dir --upgrade pip
 # Copy requirements file and install dependencies
-RUN python -m pip install --upgrade pip
 
-RUN python -m pip install -r requirements.txt
+
+# Create a directory for the app
+# RUN mkdir /app
+WORKDIR /django_container
+COPY ./requirements.txt /django_container/
+RUN python -m pip install --no-cache-dir -r /django_container/requirements.txt
+COPY . .
 
 # Copy the Django project into the container
 
