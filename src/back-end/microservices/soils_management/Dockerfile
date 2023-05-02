@@ -38,6 +38,8 @@ RUN python ./manage.py shell -c "import django;django.db.connection.cursor().exe
 
 RUN python manage.py migrate
 
+RUN python manage.py export_or_import_soils "import"
+
 # Expose the port the app runs on
 EXPOSE 8000
 
