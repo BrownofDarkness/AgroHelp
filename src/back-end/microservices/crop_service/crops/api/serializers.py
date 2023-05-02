@@ -1,6 +1,18 @@
 from rest_framework import serializers
 
-from ..models import Culture, AgriCulturePractice, SoilCulture, CultureDiseaseAdvice, Soil
+from ..models import Culture, AgriCulturePractice, CultureDiseaseAdvice, Soil
+
+
+class _CultureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Culture
+        fields = '__all__'
+
+
+class _SoilSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Soil
+        fields = '__all__'
 
 
 class SoilSerializer(serializers.ModelSerializer):
@@ -15,7 +27,7 @@ class SoilSerializer(serializers.ModelSerializer):
 
         queryset = Soil.objects.filter(soil_culture__soil=obj)
 
-        return SoilSerializer(queryset, many=True).data
+        return _SoilSerializer(queryset, many=True).data
 
 
 class CultureSerializer(serializers.ModelSerializer):
@@ -28,14 +40,15 @@ class CultureSerializer(serializers.ModelSerializer):
     def get_soils(self, obj: Culture):
         query_set = Soil.objects.filter(soil_culture__culture=obj)
 
-        return SoilSerializer(query_set, many=True).data
+        return _CultureSerializer(query_set, many=True).data
 
 
-class CulturePracticeSerializer(serializers.ModelSerializer):
+class CultureDiseaseSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Culture
-        fields = '__all__'
+        model = CultureDiseaseAdvice
+        # fields = '__all__'
+        exclude = ('culture',)
 
 
 class CultureWithPracticeSerializer(serializers.ModelSerializer):

@@ -1,6 +1,6 @@
 FROM python:3.8-slim-buster
 
-EXPOSE 8000
+EXPOSE 8001
 
 # Set Environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
