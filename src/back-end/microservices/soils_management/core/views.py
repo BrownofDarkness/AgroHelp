@@ -11,9 +11,9 @@ from rest_framework import status
 from django.http import JsonResponse, request
 from rest_framework.authtoken.models import Token
 
-from .serializers import SoilAreaSerializer
+from .serializers import SoilAreaSerializer, SoilSerializer
 
-from .models import SoilArea
+from .models import SoilArea, Soil
 
 # Create your views here.
 
@@ -22,3 +22,10 @@ class SoilAreaViewSet(CreateModelMixin, UpdateModelMixin, DestroyModelMixin, Lis
     serializer_class = SoilAreaSerializer
 
     queryset = SoilArea.objects.all()
+    
+
+class SoilViewSet(CreateModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet):
+
+    serializer_class = SoilSerializer
+
+    queryset = Soil.objects.all()
