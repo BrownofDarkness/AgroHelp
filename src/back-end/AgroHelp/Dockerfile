@@ -4,6 +4,13 @@ FROM python:3.8-slim-buster
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+<<<<<<< HEAD
+=======
+# Create a directory for the app
+# RUN mkdir /app
+WORKDIR /agrohelp_container
+COPY . .
+>>>>>>> 9264ce90c8f9336109c89e94b6ae1c7f5db693e7
 
 # Install dependencies
 RUN apt-get update && \
