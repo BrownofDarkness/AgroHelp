@@ -13,6 +13,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build the Account Docker Service image
         run: |
-          cd src/back-end/microservices/account_service && docker build . --tag ghcr.io/tomdieu/momo-app-clone:latest
-          docker run ghcr.io/tomdieu/momo-app-clone:latest
-          docker push ghcr.io/tomdieu/momo-app-clone:latest
+          cd src/back-end/microservices/account_service && docker build . --tag ghcr.io/tomdieu/agrohelp_account_service:latest
+          docker run ghcr.io/tomdieu/agrohelp_account_service:latest
+          docker push ghcr.io/tomdieu/agrohelp_account_service:latest
