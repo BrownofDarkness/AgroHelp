@@ -4,7 +4,7 @@ from .views import UserViewSet, LoginViewSet, ValidateTokenView, ResetPasswordVi
 router = DefaultRouter()
 router.register('user', UserViewSet, basename='client')
 router.register('auth', LoginViewSet, basename='login')
-router.register('validate-token/', ValidateTokenView,
+router.register('validate-token', ValidateTokenView,
                 basename='validate-token')
 router.register('reset-password', ResetPasswordView, basename='reset-password')
 
