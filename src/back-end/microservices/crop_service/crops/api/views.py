@@ -4,7 +4,8 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework import status
 
 from ..models import Culture, SoilCulture, Soil, AgriCulturePractice, CultureDiseaseAdvice
-from ..permissions import TokenPermission
+
+from auth.permissions import TokenPermission
 
 from rest_framework.decorators import action
 
@@ -25,6 +26,12 @@ class CropViewSet(CreateModelMixin, ListModelMixin, RetrieveModelMixin, GenericV
         practise = AgriCulturePractice.objects.filter(culture=instance)
 
         return CultureWithPracticeSerializer(practise, many=True).data
+
+    @action(methods=['GET'], detail=True)
+    def disease(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        disease = CultureDiseaseSerializer(instance, many=True).data
 
 
 class CultureWithPracticeViewSet(CreateModelMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet):

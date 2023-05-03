@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.gis.db import models
+# from django.contrib.gis.db import models
+from django.utils.html import html_safe
 # Create your models here.
 
 
@@ -18,6 +19,11 @@ class Soil(models.Model):
 class Culture(models.Model):
 
     name = models.CharField(max_length=20)
+    image = models.ImageField(upload_to='images')
+
+    def image_preview(self):
+        return html_safe(f"<img src='{self.image.url}' with='300' />")
+        pass
 
     def __str__(self):
         return self.name
@@ -38,7 +44,8 @@ class SoilCulture(models.Model):
 
 
 class AgriCulturePractice(models.Model):
-    name = models.CharField(help_text='Name of the agricultural practice')
+    name = models.CharField(
+        help_text='Name of the agricultural practice', max_length=255)
     culture = models.ForeignKey(
         Culture, on_delete=models.CASCADE, related_name='agriculture_practice')
     practise = models.TextField()
