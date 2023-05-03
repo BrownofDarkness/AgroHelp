@@ -8,13 +8,11 @@ ENV PYTHONUNBUFFERED=1
 
 # Create a directory for the app
 WORKDIR /account_service
+COPY ./requirements.txt /account_service/
+RUN python -m pip install --upgrade pip \ 
+    && python -m pip install -r /account_service/requirements.txt
 COPY . .
 
 # Copy requirements file and install dependencies
-RUN python -m pip install --upgrade pip
 
-RUN python -m pip install -r requirements.txt
-
-RUN python manage.py makemigrations
-
-RUN python manage.py migrate
+RUN python manage.py makemigrations && python manage.py migrate
