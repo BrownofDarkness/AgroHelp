@@ -22,7 +22,7 @@ class CultureDiseaseInlineAdmin(admin.TabularInline):
 
 @admin.register(Culture)
 class CultureAdmin(admin.ModelAdmin):
-
+    readonly_fields = ['image']
     list_display = ('id', 'name')
     search_fields = ('name',)
 
