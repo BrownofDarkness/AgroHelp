@@ -100,7 +100,7 @@ class ValidateTokenView(GenericViewSet, ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        return Response({"data": "valid token"}, status=status.HTTP_200_OK)
+        return Response({"data": "valid token", "user": request.user}, status=status.HTTP_200_OK)
 
 
 class ResetPasswordView(GenericViewSet, CreateAPIView):
