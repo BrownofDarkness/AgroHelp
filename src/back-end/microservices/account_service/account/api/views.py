@@ -32,7 +32,7 @@ class LoginViewSet(CreateModelMixin, GenericViewSet):
             login(request, user)
             token = user.auth_token.key
             context = {
-                'Token': token,
+                'token': token,
             }
             return Response(context)
         else:
@@ -54,7 +54,7 @@ class UserViewSet(CreateModelMixin, ListModelMixin, UpdateModelMixin, RetrieveMo
         return UserSerializer
 
     def get_queryset(self):
-        return [self.request.user,]
+        return User.objects.filter(id=self.request.user.id)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
