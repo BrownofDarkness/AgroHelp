@@ -20,8 +20,10 @@ def export_soil_areas(file_path):
 
             soil_data['areas'] = area_list
         data.append(soil_data)
-    json_data = json.dumps(list(data), indent=4)
-    print(json_data)
+    # convertir le dic en objet JSON
+    json_data = json.dumps(list(data), indent=4, ensure_ascii=False)
+    
+    # ouvrir le fichier JSON et y placer les données
     with open(file_path, 'w') as file:
         file.write(json_data)
         
@@ -39,13 +41,14 @@ class Command(BaseCommand):
     help = 'commande permettant d\'importer la liste des sols ou de les exporter depuis votre BD'
 
     def add_arguments(self, parser):
-        parser.add_argument('choice', type=str, help='voulez vous exporter ou importer')
+        parser.add_argument('choice', type=str, help='choisir export pour exporter sous fichier json ou import pour importer via le json file')
 
     def handle(self, *args, **options):
         choice = options['choice']
         if choice == "export":
             print()
             export_soil_areas('soils.json')
+            self.stdout.write(self.style.SUCCESS('données exportés avec succès'))
             print()
         elif choice == "import":
             print()
@@ -59,7 +62,9 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.SUCCESS(f'votre sol de type {soil.type} et ses zones géografiques ont bien été enregistrés'))
                     print()
                 else:
-                    self.stdout.write(self.style.ERROR_OUTPUT("this soil already exists"))
+                    print()
+                    self.stdout.write(self.style.ERROR_OUTPUT("A soil with this datas already exists"))
+                    print()
             print()
         else:
             print()

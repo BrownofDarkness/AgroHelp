@@ -5,7 +5,7 @@ from django.contrib.gis.db import models
 
 class Soil(models.Model):
     type = models.CharField(max_length=255, unique=True)
-    composition = models.CharField(max_length=255)
+    composition = models.TextField()
 
     def __str__(self):
         return self.type
