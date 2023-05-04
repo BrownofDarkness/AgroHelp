@@ -55,7 +55,7 @@ class Command(BaseCommand):
             data = json_file_to_list("soils.json")
             for soil_data in data:
                 if not Soil.objects.filter(type= soil_data["type"]):
-                    soil = Soil.objects.create(type= soil_data["type"], composition = soil_data["composition"])
+                    soil = Soil.objects.create(type = soil_data["type"], description = soil_data["description"], composition = soil_data["composition"])
                     for item in soil_data["areas"]:
                         area = SoilArea.objects.create(soil = soil, polygon = Polygon(eval(item['polygon'])[0]))
                     print()

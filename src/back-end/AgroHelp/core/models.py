@@ -10,6 +10,7 @@ User = get_user_model()
 
 class Soil(models.Model):
     type = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank= True)
     composition = models.CharField(max_length=255)
 
     def __str__(self):
