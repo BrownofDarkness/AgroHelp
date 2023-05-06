@@ -1,7 +1,5 @@
 FROM python:3.8-slim-buster
 
-EXPOSE 8000
-
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -9,7 +7,7 @@ ENV PYTHONUNBUFFERED=1
 # Create a directory for the app
 # RUN mkdir /app
 WORKDIR /soils_container
-COPY . .
+COPY ./requirements.txt /soils_container/requirements.txt
 
 # Install dependencies
 RUN apt-get update && \
@@ -22,13 +20,10 @@ RUN apt-get update && \
     libsqlite3-mod-spatialite \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements file and install dependencies
-RUN python -m pip install --upgrade pip
-
-RUN python -m pip install -r requirements.txt
-
+# install dependencies
+RUN python -m pip install --upgrade pip && python -m pip install -r /soils_container/requirements.txt
 # Copy the Django project into the container
-
+COPY . .
 
 # Set up the SQLite database
 
@@ -43,7 +38,7 @@ RUN python manage.py export_or_import_soils "import"
 RUN python manage.py admin_default_user
 
 # Expose the port the app runs on
-EXPOSE 8000
+EXPOSE 8003
 
 # Start the app
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

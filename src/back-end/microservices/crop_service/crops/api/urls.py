@@ -5,4 +5,10 @@ from . import views
 router = DefaultRouter()
 
 router.register('culture', views.CropViewSet, basename='culture')
-router.register('')
+router.register('culture-practise',views.CultureWithPracticeViewSet,basename='culture-practise')
+router.register('culture-disease',views.CultureDiseaseAdviceViewSet,basename='culture-disease')
+
+
+urlpatterns = []
+
+urlpatterns += router.urls

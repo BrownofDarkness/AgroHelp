@@ -14,3 +14,10 @@ services:
       - 8000:8000
     container_name: agrohelp_container
     command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - bridge
+
+networks:
+  bridge:
+    driver: bridge
+    name: network
