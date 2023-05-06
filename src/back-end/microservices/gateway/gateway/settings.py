@@ -135,5 +135,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # API SERVICES ADDRESS
 
+<<<<<<< HEAD
 ACCOUNT_SERVICE = "http://172.25.0.5:8001"
 CULTURE_SERVICE = "http://172.25.0.4:8002"
+=======
+SOILS_SERVICE = 'http://localhost:8000'
+ACCOUNT_SERVICE = 'http://localhost:8001'
+PARCEL_SERVICE = 'http://localhost:8002'
+>>>>>>> 92d21ffbaffc4c88b7887495c01821fd95f9adf3

@@ -4,6 +4,7 @@ from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin, ListMode
                                    RetrieveModelMixin)
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly, IsAdminUser
+from auth.permissions import TokenPermission
 from drf_yasg.utils import swagger_auto_schema
 from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model, authenticate, logout, login
