@@ -10,6 +10,6 @@ services:
     volumes:
       - .:/parcel_service
     ports:
-      - 8000:8000
+      - 8002:8002
     container_name: parcel_service
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8002
