@@ -12,7 +12,7 @@ from django.http import JsonResponse, request
 from rest_framework.authtoken.models import Token
 
 
-from .seializers import SoilSerializer, SoilAreaSerializer, ParcelSerializer, CultureSerializer
+from .serializers import SoilSerializer, SoilAreaSerializer, ParcelSerializer, CultureSerializer
 from .models import Soil, SoilArea, Parcel, Culture, SoilCulture, AgriculturePractice
 
 User = get_user_model()
