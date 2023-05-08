@@ -38,7 +38,7 @@ RUN python manage.py export_or_import_soils "import"
 RUN python manage.py admin_default_user
 
 # Expose the port the app runs on
-EXPOSE 8003
+EXPOSE 8000
 
 # Start the app
-# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

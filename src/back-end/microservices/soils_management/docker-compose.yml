@@ -11,9 +11,9 @@ services:
     volumes:
       - .:/soils_management
     ports:
-      - 8003:8003
+      - 8000:8000
     container_name: soils_container
-    command: python manage.py runserver 0.0.0.0:8003
+    command: python manage.py runserver 0.0.0.0:8000
     networks:
       - bridge
 
