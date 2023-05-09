@@ -6,6 +6,12 @@ EXPOSE 8001
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Create a virtual environment
+RUN python -m venv /opt/venv
+
+# Activate the virtual environment
+ENV PATH="/opt/venv/bin:$PATH"
+
 # Create a directory for the app
 WORKDIR /account_service
 COPY ./requirements.txt /account_service/
@@ -15,6 +21,6 @@ COPY . .
 
 # Copy requirements file and install dependencies
 
-RUN python manage.py makemigrations && python manage.py migrate
+# RUN python manage.py makemigrations && python manage.py migrate
 
 CMD [ "python","manage.py","runserver","0.0.0.0:8001" ]

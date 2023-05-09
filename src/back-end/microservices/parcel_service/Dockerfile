@@ -1,6 +1,6 @@
 FROM python:3.8-slim-buster
 
-EXPOSE 8000
+EXPOSE 8003
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -22,6 +22,12 @@ RUN apt-get update && \
     libsqlite3-mod-spatialite \
     && rm -rf /var/lib/apt/lists/*
 
+# Create a virtual environment
+RUN python -m venv /opt/venv
+
+# Activate the virtual environment
+ENV PATH="/opt/venv/bin:$PATH"
+
 # Copy requirements file and install dependencies
 COPY ./requirements.txt /parcel_service/
 RUN python -m pip install --upgrade pip \ 
@@ -39,7 +45,7 @@ RUN python ./manage.py shell -c "import django;django.db.connection.cursor().exe
 RUN python manage.py migrate
 
 # Expose the port the app runs on
-EXPOSE 8002
+EXPOSE 8003
 
 # Start the app
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

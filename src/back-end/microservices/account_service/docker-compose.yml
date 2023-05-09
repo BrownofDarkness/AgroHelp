@@ -10,12 +10,11 @@ services:
     volumes:
       - .:/account_service
     ports:
-      - 8001:8001
+      - 8001:8000
     container_name: account_service
-    command: python manage.py runserver 0.0.0.0:8001
+    command: python manage.py runserver 0.0.0.0:8000
     networks:
       - bridge
-
 networks:
   bridge:
     driver: bridge

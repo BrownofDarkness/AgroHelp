@@ -5,11 +5,10 @@ from .models import Soil
 
 from .serializers import _SoilSerializer
 
-from .producer import publish
-
 
 @receiver(post_save, sender=Soil)
 def notify_culture_service(sender, instance, created, **kwargs):
+    from .producer import publish
     data = _SoilSerializer(instance)
     if created:
         publish("soil_created", data.data)

@@ -10,6 +10,12 @@ services:
     volumes:
       - .:/parcel_service
     ports:
-      - 8002:8002
+      - 8003:8000
     container_name: parcel_service
-    command: python manage.py runserver 0.0.0.0:8002
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - bridge
+networks:
+  bridge:
+    driver: bridge
+    name: network

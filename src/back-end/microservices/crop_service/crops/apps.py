@@ -6,6 +6,6 @@ class CropsConfig(AppConfig):
     name = "crops"
 
     def ready(self) -> None:
-        from . import signals
+        # from . import signals
 
         return super().ready()

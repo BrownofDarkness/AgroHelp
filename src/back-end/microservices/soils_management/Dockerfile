@@ -20,8 +20,15 @@ RUN apt-get update && \
     libsqlite3-mod-spatialite \
     && rm -rf /var/lib/apt/lists/*
 
+# Create a virtual environment
+RUN python -m venv /opt/venv
+
+# Activate the virtual environment
+ENV PATH="/opt/venv/bin:$PATH"
+
 # install dependencies
-RUN python -m pip install --upgrade pip && python -m pip install -r /soils_container/requirements.txt
+RUN python -m pip install --upgrade pip
+RUN python -m pip install -r /soils_container/requirements.txt
 # Copy the Django project into the container
 COPY . .
 
@@ -38,7 +45,7 @@ RUN python manage.py export_or_import_soils "import"
 RUN python manage.py admin_default_user
 
 # Expose the port the app runs on
-EXPOSE 8003
+EXPOSE 8004
 
 # Start the app
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -7,6 +7,12 @@ ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && apt-get -y install gcc
 
+# Create a virtual environment
+RUN python -m venv /opt/venv
+
+# Activate the virtual environment
+ENV PATH="/opt/venv/bin:$PATH"
+
 WORKDIR /crop_service
 
 COPY ./requirements.txt /crop_service/requirements.txt
@@ -15,6 +21,6 @@ COPY . .
 
 RUN python -m pip install pika
 
-# RUN python manage.py makemigrations && python manage.py migrate
+RUN python manage.py makemigrations && python manage.py migrate
 
 # CMD [ "python","manage.py" ,"runserver","0.0.0.0:8002" ]

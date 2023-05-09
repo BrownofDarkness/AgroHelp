@@ -16,8 +16,11 @@ services:
       - "15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq/mnesia
+
     networks:
       - bridge
+    extra_hosts:
+      - host.docker.internal:host-gateway
 
   gateway:
     image: agro_help/gateway
@@ -27,9 +30,9 @@ services:
     volumes:
       - .:/app
     ports:
-      - 5000:5000
+      - 5000:8000
     container_name: agrohelp_gateway
-    command: python manage.py runserver 0.0.0.0:5000
+    command: python manage.py runserver 0.0.0.0:8000
     depends_on:
       - rabbitmq
     networks:

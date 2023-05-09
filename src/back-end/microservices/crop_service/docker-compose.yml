@@ -10,9 +10,9 @@ services:
     volumes:
       - .:/crop_service
     ports:
-      - 8002:8002
+      - 8002:8000
     container_name: crop_service
-    command: python manage.py runserver 0.0.0.0:8002
+    command: python manage.py runserver 0.0.0.0:8003
     networks:
       - bridge
 
@@ -23,9 +23,9 @@ services:
     depends_on:
       - crop_service
     restart: unless-stopped
+    container_name: crop_consumer
     networks:
       - bridge
-
 networks:
   bridge:
     driver: bridge
