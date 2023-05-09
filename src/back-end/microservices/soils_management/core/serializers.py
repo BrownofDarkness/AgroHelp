@@ -21,6 +21,15 @@ class SoilSerializer(sz.ModelSerializer):
         return soil.composition.split("|")
 
 
+class SoilSerializerCreate(sz.ModelSerializer):
+
+    class Meta:
+        model = Soil
+        fields = "__all__"
+
+    def get_composition(self, soil: Soil):
+        return soil.composition.split("|")
+
 class SoilAreaSerializer(serializers.GeoFeatureModelSerializer):
     soil = SoilSerializer()
 
@@ -28,3 +37,10 @@ class SoilAreaSerializer(serializers.GeoFeatureModelSerializer):
         model = SoilArea
         geo_field = "polygon"
         fields = ("soil", "polygon")
+        
+class SoilAreaSerializerCreate(serializers.GeoFeatureModelSerializer):
+
+    class Meta:
+        model = SoilArea
+        geo_field = "polygon"
+        fields = ("soil","polygon")

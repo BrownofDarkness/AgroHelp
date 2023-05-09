@@ -8,13 +8,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
 )
 from rest_framework.decorators import action
-from rest_framework.permissions import (
-    IsAuthenticated,
-    AllowAny,
-    IsAuthenticatedOrReadOnly,
-    IsAdminUser,
-)
-from auth.permissions import TokenPermission
+
 from drf_yasg.utils import swagger_auto_schema
 from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model, authenticate, logout, login
@@ -22,7 +16,12 @@ from rest_framework import status
 from django.http import JsonResponse, request
 from rest_framework.authtoken.models import Token
 
-from .serializers import SoilAreaSerializer, SoilSerializer
+from .serializers import (
+    SoilAreaSerializer,
+    SoilSerializer,
+    SoilAreaSerializerCreate,
+    SoilSerializerCreate,
+)
 
 from .models import SoilArea, Soil
 
@@ -36,9 +35,13 @@ class SoilAreaViewSet(
     ListModelMixin,
     GenericViewSet,
 ):
-    serializer_class = SoilAreaSerializer
-
     queryset = SoilArea.objects.all()
+
+    def get_serializer_class(self, *args, **kwargs):
+        if self.request.method.upper() in ["POST", "PUT", "PATCH"]:
+            return SoilAreaSerializerCreate
+        else:
+            return SoilAreaSerializer
 
 
 class SoilViewSet(
@@ -48,6 +51,10 @@ class SoilViewSet(
     ListModelMixin,
     GenericViewSet,
 ):
-    serializer_class = SoilSerializer
-
     queryset = Soil.objects.all()
+
+    def get_serializer_class(self, *args, **kwargs):
+        if self.request.method.upper() in ["POST", "PUT", "PATCH"]:
+            return SoilSerializerCreate
+        else:
+            return SoilSerializer

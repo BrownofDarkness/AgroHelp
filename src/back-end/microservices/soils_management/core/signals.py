@@ -9,9 +9,7 @@ from .serializers import _SoilSerializer
 @receiver(post_save, sender=Soil)
 def notify_culture_service(sender, instance, created, **kwargs):
     from .producer import publish
+
     data = _SoilSerializer(instance)
     if created:
         publish("soil_created", data.data)
-
-    else:
-        publish("soil_updated", data.data)

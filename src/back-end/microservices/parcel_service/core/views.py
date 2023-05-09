@@ -19,7 +19,7 @@ from .models import Parcel, CultureParcel
 
 class ParcelViewSet(CreateModelMixin, DestroyModelMixin, ListModelMixin, UpdateModelMixin, RetrieveModelMixin, GenericViewSet):
     serializer_class = ParcelSerializer
-    permission_classes = [TokenPermission]
+    # permission_classes = [TokenPermission]
 
     def get_queryset(self):
         user = self.request.user

@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
 
   # Django application
@@ -11,9 +10,9 @@ services:
     volumes:
       - .:/soils_management
     ports:
-      - 8004:8000
+      - 8004:8004
     container_name: soils_container
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8004
     networks:
       - bridge
 networks:
