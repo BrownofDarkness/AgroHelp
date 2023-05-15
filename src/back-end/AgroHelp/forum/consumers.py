@@ -9,8 +9,8 @@ from .serializers import ForumPostSerializer, ForumPostCommentSerializer
 
 class ForumConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.room_name = self.scope["url_route"]["kwargs"]["forum_id"]
-        self.room_name = "forum_%s" % self.room_name
+        self.room_name_id = self.scope["url_route"]["kwargs"]["forum_id"]
+        self.room_name = "forum_%s" % self.room_name_id
 
         # Join Forum
         await self.channel_layer.group_add(self.room_name, self.channel_name)
@@ -33,12 +33,14 @@ class ForumConsumer(AsyncWebsocketConsumer):
         msg_type: str = message.get("msg_type")
         data: dict = message.get("data")
 
+        print(text_data_json)
+
         if msg_type == "create_post":
             # create a forum post
-            text: str = data.get("text")
+            title: str = data.get("title")
             content: str = data.get("content")
 
-            msg_data = await self.save_forum_message(text=text, content=content)
+            msg_data = await self.save_forum_message(title=title, content=content)
             await self.channel_layer.group_send(
                 self.room_name, {"type": "send_comment", "message": msg_data}
             )
@@ -52,22 +54,24 @@ class ForumConsumer(AsyncWebsocketConsumer):
                 post=post, content=content, parent=parent
             )
             await self.channel_layer.group_send(
-                self.room_name, {"type": "send_comment", "message": msg_data}
+                self.room_name, {"type": "send_message", "message": msg_data}
             )
 
     async def send_comment(self, event):
         message = event["message"]
-        self.send(text_data=json.dumps({message: message}))
+        data = {"msg_type": "comment_created", "data": message}
+        self.send(text_data=json.dumps({"message": data}))
 
     async def send_message(self, event):
         message = event["message"]
-        self.send(text_data=json.dumps({message: message}))
+        data = {"msg_type": "comment_created", "data": message}
+        self.send(text_data=json.dumps({"message": data}))
 
     @sync_to_async
     def save_forum_message(self, title: str, content: str):
         # here i will get the sender of the message in the scope dictionary
         user = self.scope["user"]
-        forum = Forum.objects.get(id=self.room_name)
+        forum = Forum.objects.get(id=int(self.room_name_id))
         forum_instance = ForumPost.objects.create(
             forum=forum, author=user, title=title, content=content
         )
@@ -79,7 +83,7 @@ class ForumConsumer(AsyncWebsocketConsumer):
         self, post: int, content: str, parent: int | None = None
     ):
         user = self.scope["user"]
-        forum = Forum.objects.get(id=self.room_name)
+        forum = Forum.objects.get(id=int(self.room_name_id))
         post_comment = ForumPostComment.objects.create(
             post=post, author=user, parent=parent, content=content
         )
