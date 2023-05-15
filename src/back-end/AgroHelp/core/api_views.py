@@ -59,8 +59,7 @@ class CultureViewSet(DestroyModelMixin, ListModelMixin, UpdateModelMixin, Retrie
     serializer_class = CultureSerializer
 
     def get_permissions(self):
-        permission_classes = []
-        if self.request.method == 'PUT' or self.request.method == 'DELETE' or self.request.method == 'PATCH':
+        if self.request.method.upper() in ['POST', 'PUT', 'PATCH']:
             permission_classes = [IsAdminUser]
         else:
             permission_classes = [IsAuthenticated]

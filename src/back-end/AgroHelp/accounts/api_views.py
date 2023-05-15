@@ -40,8 +40,7 @@ class UserViewSet(CreateModelMixin, ListModelMixin, UpdateModelMixin, RetrieveMo
     serializer_class = UserSerializer
     
     def get_permissions(self):
-        permission_classes = []
-        if self.request.method == 'POST':
+        if self.request.method.upper() == 'POST':
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
