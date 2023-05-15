@@ -20,7 +20,7 @@ class Culture(models.Model):
 
     def image_preview(self):
         return format_html(
-            f"<img alt='{self.name}' src='{self.image.url}' width='400px' heigth='400px' classs='rounded float-right' />"
+            f"<img src='{self.image.url}' width='400px' heigth='400px' classs='rounded float-right' />"
         )
 
     def __str__(self):
