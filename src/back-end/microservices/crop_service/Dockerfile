@@ -19,8 +19,8 @@ COPY ./requirements.txt /crop_service/requirements.txt
 RUN python -m pip install --upgrade pip && python -m pip install --no-cache-dir -r /crop_service/requirements.txt
 COPY . .
 
-RUN python -m pip install pika
+# RUN python -m pip install pika
 
-RUN python manage.py makemigrations && python manage.py migrate
+# RUN python manage.py makemigrations && python manage.py migrate
 
 # CMD [ "python","manage.py" ,"runserver","0.0.0.0:8002" ]

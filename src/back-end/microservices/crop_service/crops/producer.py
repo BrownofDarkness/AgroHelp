@@ -1,9 +1,9 @@
 import pika, json
 
-# credentials = pika.PlainCredentials("myuser", "mypass")
-# parameters = pika.ConnectionParameters("RabbitMq", 5672, "/", credentials)
+credentials = pika.PlainCredentials("myuser", "mypass")
+parameters = pika.ConnectionParameters("", 5672, "/", credentials)
 
-parameters = pika.URLParameters('amqps://krimticf:rb_pr0-RABLjrHtEvKYUCa7lfQtMi8hG@jaragua.lmq.cloudamqp.com/krimticf')
+# parameters = pika.URLParameters('amqps://krimticf:rb_pr0-RABLjrHtEvKYUCa7lfQtMi8hG@jaragua.lmq.cloudamqp.com/krimticf')
 
 connection = pika.BlockingConnection(parameters)
 

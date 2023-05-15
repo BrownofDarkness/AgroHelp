@@ -15,6 +15,16 @@ services:
     command: python manage.py runserver 0.0.0.0:8004
     networks:
       - bridge
+  queue:
+    build:
+      context: .
+    command: 'python -u consumer.py'
+    depends_on:
+      - soils_management
+    restart: unless-stopped
+    container_name: soil_consumer
+    networks:
+      - bridge
 networks:
   bridge:
     driver: bridge
