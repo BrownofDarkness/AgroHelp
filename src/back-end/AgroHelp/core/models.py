@@ -113,3 +113,24 @@ class CultureDiseaseAdvice(models.Model):
 
     def image_preview(self):
         return format_html(f"<img src='{self.image.url}' width='400' heigth='400'/>")
+
+
+class Fertilizer(models.Model):
+    TYPE = (("orgnaic", "organic"), ("chemical", "chemical"))
+    name = models.CharField(max_length=100)
+    composition = models.TextField()
+    type = models.CharField(max_length=25, choices=TYPE)
+    description = models.TextField()
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class CultureFilizer(models.Model):
+    fertilizer = models.ForeignKey(
+        Fertilizer, on_delete=models.CASCADE, related_name="culture_fertilizer"
+    )
+
+    culture = models.ForeignKey(
+        Culture, on_delete=models.CASCADE, related_name="fertilizers"
+    )

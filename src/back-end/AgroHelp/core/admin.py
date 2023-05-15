@@ -12,6 +12,8 @@ from .models import (
     SoilCulture,
     CultureDiseaseAdvice,
     AgriculturePractice,
+    Fertilizer,
+    CultureFilizer,
 )
 
 # Register your models here.
@@ -63,3 +65,13 @@ class AgriculturalPractiseAdmin(admin.ModelAdmin):
 @admin.register(CultureDiseaseAdvice)
 class CultureDiseaseAdviceAdmin(admin.ModelAdmin):
     list_display = ["id", "culture", "disease_name", "image_preview"]
+
+
+@admin.register(Fertilizer)
+class FertilizerAdmin(admin.ModelAdmin):
+    list_display = ["id", "name", "composition", "type"]
+
+
+@admin.register(CultureFilizer)
+class CultureFilizerAdmin(admin.ModelAdmin):
+    list_display = ["fertilizer", "culture"]

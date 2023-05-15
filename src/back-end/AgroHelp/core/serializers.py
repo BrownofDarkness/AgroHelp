@@ -8,6 +8,7 @@ from .models import (
     CultureParcel,
     AgriculturePractice,
     CultureDiseaseAdvice,
+    Fertilizer,
 )
 from rest_framework import serializers as sz
 from rest_framework_gis import serializers
@@ -97,3 +98,9 @@ class CultureIDSerializer(sz.Serializer):
         if cultures:
             return cultures.first()
         raise sz.ValidationError({"id": f"The culture with id {value} does not exist!"})
+
+
+class FertilizerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Fertilizer
+        fields = "__all__"

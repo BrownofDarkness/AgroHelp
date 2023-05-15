@@ -31,6 +31,7 @@ from .serializers import (
     _CultureSerializer,
     CultureIDSerializer,
     CultureDiseaseSerializer,
+    FertilizerSerializer,
 )
 from .models import (
     Soil,
@@ -41,6 +42,7 @@ from .models import (
     AgriculturePractice,
     CultureDiseaseAdvice,
     CultureParcel,
+    Fertilizer,
 )
 
 User = get_user_model()
@@ -204,6 +206,12 @@ class CultureViewSet(
         culture_areas = SoilArea.objects.filter(soil__soil_culture__culture=instance)
         return Response(SoilAreaSerializer(culture_areas, many=True).data)
 
+    @action(methods=["GET"], detail=True)
+    def fertilizers(self, request, *args, **kwargs):
+        instance = self.get_object()
+        fertislizers = Fertilizer.objects.filter(culture_fertilizer__culture=instance)
+        return Response(FertilizerSerializer(fertislizers, many=True).data)
+
 
 class CulturePractiseViewSet(
     DestroyModelMixin,
@@ -221,3 +229,11 @@ class CulturePractiseViewSet(
         if self.request.query_params.get("culture"):
             culture = Culture.objects.filter(name=culture)
         return AgriculturePractice.objects.all()
+
+
+class FertilizerViewSet(ModelViewSet, GenericViewSet):
+    permission_classes = [IsAuthenticated]
+
+    queryset = Fertilizer.objects.all()
+
+    serializer_class = FertilizerSerializer
