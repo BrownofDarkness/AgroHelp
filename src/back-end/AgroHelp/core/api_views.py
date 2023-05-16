@@ -48,6 +48,28 @@ from .models import (
 User = get_user_model()
 
 
+class SoilViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+    queryset = Soil.objects.all()
+
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action in ["areas"]:
+            return SoilAreaSerializer
+
+        return SoilSerializer
+
+    @action(methods=["GET"], detail=True)
+    def areas(self, request, *args, **kwargs):
+        """
+        This action will get retrieve all the areas where that soil is been found
+        """
+        instance = self.get_object()
+        soil_area = SoilArea.objects.filter(soil=instance)
+
+        return Response(
+            SoilAreaSerializer(soil_area, many=True, context={"request": request}).data
+        )
+
+
 class SoilAreaViewSet(
     CreateModelMixin,
     UpdateModelMixin,
@@ -148,7 +170,7 @@ class CultureViewSet(
     # serializer_class = CultureSerializer
 
     def get_permissions(self):
-        if self.request.method.upper() in ['POST', 'PUT', 'PATCH']:
+        if self.request.method.upper() in ["POST", "PUT", "PATCH"]:
             permission_classes = [IsAdminUser]
         else:
             permission_classes = [IsAuthenticated]

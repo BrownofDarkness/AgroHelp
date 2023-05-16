@@ -40,12 +40,19 @@ class ParcelSerializer(serializers.GeoModelSerializer):
 class SoilSerializer(sz.ModelSerializer):
     composition = sz.SerializerMethodField()
 
+    cultures = sz.SerializerMethodField()
+
     class Meta:
         model = Soil
         fields = "__all__"
 
     def get_composition(self, soil: Soil):
         return soil.composition.split("|")
+
+    def get_cultures(self, soil: Soil):
+        return _CultureSerializer(
+            Culture.objects.filter(soil_culture__soil=soil), many=True
+        ).data
 
 
 class CultureSerializer(sz.ModelSerializer):
