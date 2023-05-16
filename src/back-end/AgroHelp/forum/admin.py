@@ -17,4 +17,4 @@ class ForumAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ForumPostComment)
-admin.site.register(ForumCommentVote)
+# admin.site.register(ForumCommentVote)
