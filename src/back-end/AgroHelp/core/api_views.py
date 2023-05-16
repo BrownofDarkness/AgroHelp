@@ -20,6 +20,8 @@ from django.contrib.auth import get_user_model, authenticate, logout, login
 from rest_framework import status
 from django.http import JsonResponse, request
 from rest_framework.authtoken.models import Token
+from django.db.models import Count, Q
+import random
 
 
 from .serializers import (
@@ -32,6 +34,8 @@ from .serializers import (
     CultureIDSerializer,
     CultureDiseaseSerializer,
     FertilizerSerializer,
+    CulturesIdsSerializer,
+    RecommendedSerializer,
 )
 from .models import (
     Soil,
@@ -94,13 +98,16 @@ class ParcelViewSet(
     permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action == "set_culture":
-            return CultureIDSerializer
+        if self.action == "add_cultures":
+            return CulturesIdsSerializer
+
         return ParcelSerializer
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Parcel.objects.filter(user=user.id)
+        queryset = Parcel.objects.filter(
+            user=user.id
+        )  # .distinct('cultures__culture__name')
         return queryset
 
     def create(self, request, *args, **kwargs):
@@ -137,15 +144,24 @@ class ParcelViewSet(
         )
 
     @action(methods=["POST"], detail=True)
-    def set_culture(self, request, pk, *args, **kwargs):
+    def add_cultures(self, request, *args, **kwargs):
         instance: Parcel = self.get_object()
-        serializer = CultureIDSerializer(data=request.data)
+        serializer = CulturesIdsSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        culture = serializer.validated_data["id"]
+
+        cultures = serializer.validated_data["ids"]
+
         if instance.user == request.user:
-            CultureParcel.objects.create(culture_id=culture, parcel=instance)
-            return Response(status=status.HTTP_201_CREATED)
-        return Response("OK", status=status.HTTP_403_FORBIDDEN)
+            for culture in cultures:
+                try:
+                    CultureParcel.objects.create(culture=culture, parcel=instance)
+                except:
+                    pass
+            return Response(
+                {"message": f"Culture added successfully"},
+                status=status.HTTP_201_CREATED,
+            )
+        return Response({"detail": "Not Allow"}, status=status.HTTP_403_FORBIDDEN)
 
 
 class CultureViewSet(
@@ -164,6 +180,8 @@ class CultureViewSet(
             return AgriculturePracticeSerializer
         elif self.action in ["favorable_areas"]:
             return SoilAreaSerializer
+        elif self.action in ["recommended"]:
+            return RecommendedSerializer
         else:
             return CultureSerializer
 
@@ -228,6 +246,73 @@ class CultureViewSet(
         instance = self.get_object()
         fertislizers = Fertilizer.objects.filter(culture_fertilizer__culture=instance)
         return Response(FertilizerSerializer(fertislizers, many=True).data)
+
+    @action(methods=["GET"], detail=False)
+    def populars(self, request, *args, **kwargs):
+        popular_cultures = Culture.objects.annotate(
+            num_parcels=Count("parcel")
+        ).order_by("-num_parcels")
+
+        return Response(
+            CultureSerializer(
+                popular_cultures[: random.randrange(10, 20)],
+                many=True,
+                context={"request": request},
+            ).data
+        )
+
+    @action(methods=["GET"], detail=False)
+    def recommended(self, request, *args, **kwargs):
+        recomended_cultures = []
+        parcels = Parcel.objects.filter(user=request.user.id)
+
+        for parcel in parcels:
+            soils = Soil.objects.filter(areas__polygon__intersects=parcel.location)
+            cultures = Culture.objects.filter(soil_culture__soil__in=soils)
+            _cultures = _CultureSerializer(
+                cultures, many=True, context={"request": request}
+            ).data
+            for _c in _cultures:
+                recomended_cultures.append(_c)
+
+        """
+        The function below simply remove the duplicates in the a list
+        """
+        seen = set()
+        unique_recomended_cultures = [
+            dict_
+            for dict_ in recomended_cultures
+            if not (dict_["id"] in seen or seen.add(dict_["id"]))
+        ]
+        """
+        The output data will have the form
+        ```json
+        {
+            culture:{
+                ...
+            },
+            favorite:false
+        }
+        ```
+        """
+
+        results = []
+
+        for culture in unique_recomended_cultures:
+            """
+            Here i will check if a user practise this culture
+            """
+            # favorite = Culture.objects.filter(
+            #     Q(parcel__culture__id=culture["id"]) & Q(parcel__parcel__in=parcels)
+            # ).exists()
+            favorite = Culture.objects.filter(
+                parcel__culture__id=culture["id"], parcel__parcel__in=parcels
+            ).exists()
+            data = {"culture": culture, "favorite": favorite}
+
+            results.append(data)
+
+        return Response(results)
 
 
 class CulturePractiseViewSet(

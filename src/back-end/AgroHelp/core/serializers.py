@@ -21,18 +21,18 @@ class _CultureSerializer(serializers.ModelSerializer):
 
 
 class ParcelSerializer(serializers.GeoModelSerializer):
-    culture = sz.SerializerMethodField()
+    cultures = sz.SerializerMethodField()
 
     class Meta:
         model = Parcel
         geo_field = "location"
         fields = "__all__"
 
-    def get_culture(self, obj: Parcel):
-        culture = Culture.objects.get(parcel__parcel=obj)
-        if culture:
+    def get_cultures(self, obj: Parcel):
+        cultures = Culture.objects.filter(parcel__parcel=obj)
+        if cultures:
             return _CultureSerializer(
-                culture, context={"request": self.context["request"]}
+                cultures, many=True, context={"request": self.context["request"]}
             ).data
         return None
 
@@ -107,7 +107,29 @@ class CultureIDSerializer(sz.Serializer):
         raise sz.ValidationError({"id": f"The culture with id {value} does not exist!"})
 
 
+class CulturesIdsSerializer(sz.Serializer):
+    ids = serializers.ListSerializer(child=sz.IntegerField())
+
+    def validate_ids(self, value: list):
+        _cultures = []
+        print("Values : ", value)
+        for _id in value:
+            cultures = Culture.objects.filter(id=int(_id))
+            print("Cultures ", cultures)
+            if cultures.exists():
+                _cultures.append(cultures.first())
+            else:
+                raise sz.ValidationError(f"The culture with id {_id} does not exist!")
+
+        return _cultures
+
+
 class FertilizerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fertilizer
         fields = "__all__"
+
+
+class RecommendedSerializer(sz.Serializer):
+    culture = _CultureSerializer()
+    favorite = sz.BooleanField()
