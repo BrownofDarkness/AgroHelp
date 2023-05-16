@@ -14,7 +14,6 @@ from rest_framework.permissions import (
 from django.contrib.auth import get_user_model, authenticate, login
 from rest_framework import status
 from django.http import JsonResponse
-from rest_framework.authtoken.models import Token
 from .serializers import (
     LoginSerializer,
     UserSerializer,
@@ -29,7 +28,9 @@ User = get_user_model()
 
 class LoginViewSet(CreateModelMixin, GenericViewSet):
     serializer_class = LoginSerializer
-    permission_classes = [AllowAny,]
+    permission_classes = [
+        AllowAny,
+    ]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=self.request.data)
@@ -40,10 +41,7 @@ class LoginViewSet(CreateModelMixin, GenericViewSet):
         if user is not None:
             login(request, user)
             token = user.auth_token.key
-            context = {
-                "token": token,
-                "user":UserSerializer(user).data
-            }
+            context = {"token": token, "user": UserSerializer(user).data}
             return Response(context)
         else:
             return Response(
@@ -62,7 +60,7 @@ class UserViewSet(
     serializer_class = UserSerializer
 
     def get_permissions(self):
-        if self.request.method.upper() == 'POST':
+        if self.request.method.upper() == "POST":
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
@@ -84,7 +82,6 @@ class UserViewSet(
         instance = serializer.save()
         instance.set_password(instance.password)
         instance.save()
-        # Token.objects.create(user=instance)
         return Response(UserSerializer(instance).data, status=201)
 
     def update(self, request, *args, **kwargs):

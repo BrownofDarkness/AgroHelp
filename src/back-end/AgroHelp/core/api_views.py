@@ -10,17 +10,12 @@ from rest_framework.mixins import (
 from rest_framework.decorators import action
 from rest_framework.permissions import (
     IsAuthenticated,
-    AllowAny,
-    IsAuthenticatedOrReadOnly,
     IsAdminUser,
 )
-from drf_yasg.utils import swagger_auto_schema
-from django.utils.decorators import method_decorator
-from django.contrib.auth import get_user_model, authenticate, logout, login
+from django.contrib.auth import get_user_model
 from rest_framework import status
-from django.http import JsonResponse, request
-from rest_framework.authtoken.models import Token
-from django.db.models import Count, Q
+from django.http import JsonResponse
+from django.db.models import Count
 import random
 
 
@@ -31,7 +26,6 @@ from .serializers import (
     ParcelSerializer,
     CultureSerializer,
     _CultureSerializer,
-    CultureIDSerializer,
     CultureDiseaseSerializer,
     FertilizerSerializer,
     CulturesIdsSerializer,
@@ -42,7 +36,6 @@ from .models import (
     SoilArea,
     Parcel,
     Culture,
-    SoilCulture,
     AgriculturePractice,
     CultureDiseaseAdvice,
     CultureParcel,
