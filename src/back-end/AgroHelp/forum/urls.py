@@ -12,11 +12,11 @@ router.register("forum-post", views.ForumPostViewSet, basename="forum-post")
 router.register(
     "forum-post-comment", views.ForumPostCommentViewSet, basename="forum-post-comment"
 )
-router.register(
-    "forum-post-comment-vote",
-    views.ForumCommentVoteViewSet,
-    basename="forum-post-comment-vote",
-)
+# router.register(
+#     "forum-post-comment-vote",
+#     views.ForumCommentVoteViewSet,
+#     basename="forum-post-comment-vote",
+# )
 
 
 urlpatterns = []
