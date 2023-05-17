@@ -11,6 +11,6 @@ router.register("user", UserViewSet, basename="client")
 router.register("auth", LoginViewSet, basename="login")
 router.register("reset-password", ResetPasswordView, basename="reset-password")
 
-router.register("updated-password", UpdatePasswordViewSet, basename="updated-password")
+router.register("update-password", UpdatePasswordViewSet, basename="updated-password")
 
 urlpatterns = router.urls
