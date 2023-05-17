@@ -18,19 +18,21 @@ from django.http import JsonResponse
 from django.db.models import Count
 import random
 
-
 from .serializers import (
     AgriculturePracticeSerializer,
     SoilSerializer,
     SoilAreaSerializer,
     ParcelSerializer,
     CultureSerializer,
+    SoilSerializerCreate,
     _CultureSerializer,
     CultureDiseaseSerializer,
     FertilizerSerializer,
     CulturesIdsSerializer,
     RecommendedSerializer,
+    SoilAreaSerializerCreate,
 )
+
 from .models import (
     Soil,
     SoilArea,
@@ -51,7 +53,6 @@ class SoilViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     def get_serializer_class(self, *args, **kwargs):
         if self.action in ["areas"]:
             return SoilAreaSerializer
-
         return SoilSerializer
 
     @action(methods=["GET"], detail=True)
@@ -63,7 +64,8 @@ class SoilViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         soil_area = SoilArea.objects.filter(soil=instance)
 
         return Response(
-            SoilAreaSerializer(soil_area, many=True, context={"request": request}).data
+            SoilAreaSerializer(soil_area, many=True, context={"request": request}).data,
+            status=200,
         )
 
 
@@ -75,7 +77,11 @@ class SoilAreaViewSet(
     ListModelMixin,
     GenericViewSet,
 ):
-    serializer_class = SoilAreaSerializer
+    def get_serializer_class(self):
+        if self.request.method.upper() in ["POST", "PUT", "PATCH"]:
+            return SoilAreaSerializerCreate
+
+        return SoilAreaSerializer
 
     queryset = SoilArea.objects.all()
 
@@ -203,14 +209,14 @@ class CultureViewSet(
         user = self.request.user
         if instance.user == user:
             return super().update(request, *args, **kwargs)
-        return JsonResponse({"detail": "you are not allowed to update this parcel"})
+        return JsonResponse({"detail": "you are not allowed to update this culture"})
 
     def delete(self, request, *args, **kwargs):
         instance: Parcel = self.get_object()
         user = self.request.user
         if instance.user == user:
             return super().delete(request, *args, **kwargs)
-        return JsonResponse({"detail": "you are not allowed to delete this parcel"})
+        return JsonResponse({"detail": "you are not allowed to delete this culture"})
 
     @action(methods=["GET"], detail=True)
     def practise(self, request, *args, **kwargs):
