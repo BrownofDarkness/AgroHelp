@@ -69,6 +69,7 @@ class SoilViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
 class SoilAreaViewSet(
     CreateModelMixin,
+    RetrieveModelMixin,
     UpdateModelMixin,
     DestroyModelMixin,
     ListModelMixin,
