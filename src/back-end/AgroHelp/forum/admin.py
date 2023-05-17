@@ -17,4 +17,10 @@ class ForumAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ForumPostComment)
-# admin.site.register(ForumCommentVote)
+
+
+@admin.register(ForumPost)
+class ForumPostAdmin(admin.ModelAdmin):
+    list_display = ["forum", "author", "title", "content", "created_at"]
+
+    list_filter = ["created_at", "forum"]

@@ -1,5 +1,5 @@
 export default class ApiService {
-  static endPoint = "http://192.168.137.206:8000/api";
+  static endPoint = "http://<backend_ip_address>/api";
 
   static async login(data) {
     const url = this.endPoint + "/account/auth/";
