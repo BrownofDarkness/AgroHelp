@@ -1,46 +1,21 @@
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.response import Response
-from rest_framework.mixins import (
-    CreateModelMixin,
-    DestroyModelMixin,
-    ListModelMixin,
-    UpdateModelMixin,
-    RetrieveModelMixin,
-)
+from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin, ListModelMixin, UpdateModelMixin, RetrieveModelMixin, )
 from rest_framework.decorators import action
-from rest_framework.permissions import (
-    IsAuthenticated,
-    IsAdminUser,
-)
+from rest_framework.permissions import (IsAuthenticated, IsAdminUser, )
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from django.http import JsonResponse
 from django.db.models import Count
 import random
 
-
 from .serializers import (
-    AgriculturePracticeSerializer,
-    SoilSerializer,
-    SoilAreaSerializer,
-    ParcelSerializer,
-    CultureSerializer,
-    _CultureSerializer,
-    CultureDiseaseSerializer,
-    FertilizerSerializer,
-    CulturesIdsSerializer,
-    RecommendedSerializer,
+    AgriculturePracticeSerializer, SoilSerializer, SoilAreaSerializer, ParcelSerializer, CultureSerializer, SoilSerializerCreate,
+    
+    _CultureSerializer, CultureDiseaseSerializer, FertilizerSerializer, CulturesIdsSerializer, RecommendedSerializer, SoilAreaSerializerCreate,
 )
-from .models import (
-    Soil,
-    SoilArea,
-    Parcel,
-    Culture,
-    AgriculturePractice,
-    CultureDiseaseAdvice,
-    CultureParcel,
-    Fertilizer,
-)
+
+from .models import ( Soil, SoilArea, Parcel, Culture, AgriculturePractice, CultureDiseaseAdvice, CultureParcel, Fertilizer,)
 
 User = get_user_model()
 
@@ -51,7 +26,6 @@ class SoilViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     def get_serializer_class(self, *args, **kwargs):
         if self.action in ["areas"]:
             return SoilAreaSerializer
-
         return SoilSerializer
 
     @action(methods=["GET"], detail=True)
@@ -63,30 +37,22 @@ class SoilViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         soil_area = SoilArea.objects.filter(soil=instance)
 
         return Response(
-            SoilAreaSerializer(soil_area, many=True, context={"request": request}).data
+            SoilAreaSerializer(soil_area, many=True, context={"request": request}).data, status=200
         )
 
 
-class SoilAreaViewSet(
-    CreateModelMixin,
-    UpdateModelMixin,
-    DestroyModelMixin,
-    ListModelMixin,
-    GenericViewSet,
-):
-    serializer_class = SoilAreaSerializer
+class SoilAreaViewSet( CreateModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet,):
+    
+    def get_serializer_class(self):
+        if self.request.method.upper() in ["POST", "PUT", "PATCH"]:
+            return SoilAreaSerializerCreate
+        
+        return SoilAreaSerializer
 
     queryset = SoilArea.objects.all()
 
 
-class ParcelViewSet(
-    CreateModelMixin,
-    DestroyModelMixin,
-    ListModelMixin,
-    UpdateModelMixin,
-    RetrieveModelMixin,
-    GenericViewSet,
-):
+class ParcelViewSet(CreateModelMixin, DestroyModelMixin, ListModelMixin, UpdateModelMixin, RetrieveModelMixin, GenericViewSet,):
     # serializer_class = ParcelSerializer
     permission_classes = [IsAuthenticated]
 
@@ -157,13 +123,8 @@ class ParcelViewSet(
         return Response({"detail": "Not Allow"}, status=status.HTTP_403_FORBIDDEN)
 
 
-class CultureViewSet(
-    DestroyModelMixin,
-    ListModelMixin,
-    UpdateModelMixin,
-    RetrieveModelMixin,
-    GenericViewSet,
-):
+class CultureViewSet(DestroyModelMixin, ListModelMixin, UpdateModelMixin, RetrieveModelMixin, GenericViewSet,):
+    
     def get_serializer_class(self):
         if self.action in ["list", "me", "retrieve"]:
             return CultureSerializer
@@ -202,14 +163,14 @@ class CultureViewSet(
         user = self.request.user
         if instance.user == user:
             return super().update(request, *args, **kwargs)
-        return JsonResponse({"detail": "you are not allowed to update this parcel"})
+        return JsonResponse({"detail": "you are not allowed to update this culture"})
 
     def delete(self, request, *args, **kwargs):
         instance: Parcel = self.get_object()
         user = self.request.user
         if instance.user == user:
             return super().delete(request, *args, **kwargs)
-        return JsonResponse({"detail": "you are not allowed to delete this parcel"})
+        return JsonResponse({"detail": "you are not allowed to delete this culture"})
 
     @action(methods=["GET"], detail=True)
     def practise(self, request, *args, **kwargs):
@@ -308,13 +269,7 @@ class CultureViewSet(
         return Response(results)
 
 
-class CulturePractiseViewSet(
-    DestroyModelMixin,
-    ListModelMixin,
-    UpdateModelMixin,
-    RetrieveModelMixin,
-    GenericViewSet,
-):
+class CulturePractiseViewSet( DestroyModelMixin, ListModelMixin, UpdateModelMixin, RetrieveModelMixin, GenericViewSet, ):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
