@@ -37,6 +37,36 @@ class ParcelSerializer(serializers.GeoModelSerializer):
         return None
 
 
+class _SoilAreaSerializer(serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = SoilArea
+        geo_field = "polygon"
+        fields = ["polygon"]
+
+
+class SoilDetailSerializer(sz.ModelSerializer):
+    composition = sz.SerializerMethodField()
+
+    cultures = sz.SerializerMethodField()
+
+    areas = sz.SerializerMethodField()
+
+    class Meta:
+        model = Soil
+        fields = "__all__"
+
+    def get_composition(self, soil: Soil):
+        return soil.composition.split("|")
+
+    def get_cultures(self, soil: Soil):
+        return _CultureSerializer(
+            Culture.objects.filter(soil_culture__soil=soil), many=True
+        ).data
+
+    def get_areas(self, soil: Soil):
+        return _SoilAreaSerializer(SoilArea.objects.filter(soil=soil), many=True).data
+
+
 class SoilSerializer(sz.ModelSerializer):
     composition = sz.SerializerMethodField()
 
@@ -54,8 +84,8 @@ class SoilSerializer(sz.ModelSerializer):
             Culture.objects.filter(soil_culture__soil=soil), many=True
         ).data
 
-class SoilSerializerCreate(sz.ModelSerializer):
 
+class SoilSerializerCreate(sz.ModelSerializer):
     class Meta:
         model = Soil
         fields = "__all__"
@@ -84,12 +114,13 @@ class SoilAreaSerializer(serializers.GeoFeatureModelSerializer):
         geo_field = "polygon"
         fields = ("soil", "polygon")
 
-class SoilAreaSerializerCreate(serializers.GeoFeatureModelSerializer):
 
+class SoilAreaSerializerCreate(serializers.GeoFeatureModelSerializer):
     class Meta:
         model = SoilArea
         geo_field = "polygon"
-        fields = ("soil","polygon")
+        fields = ("soil", "polygon")
+
 
 class AgriculturePracticeSerializer(serializers.ModelSerializer):
     culture = _CultureSerializer()
