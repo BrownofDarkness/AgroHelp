@@ -18,6 +18,8 @@ from django.http import JsonResponse
 from django.db.models import Count
 import random
 
+from rest_framework.viewsets import ViewSet
+
 from .serializers import (
     AgriculturePracticeSerializer,
     SoilSerializer,
@@ -26,6 +28,7 @@ from .serializers import (
     CultureSerializer,
     SoilSerializerCreate,
     _CultureSerializer,
+    SoilDetailSerializer,
     CultureDiseaseSerializer,
     FertilizerSerializer,
     CulturesIdsSerializer,
@@ -53,6 +56,8 @@ class SoilViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     def get_serializer_class(self, *args, **kwargs):
         if self.action in ["areas"]:
             return SoilAreaSerializer
+        if self.action in ["list", "retrieve"]:
+            return SoilDetailSerializer
         return SoilSerializer
 
     @action(methods=["GET"], detail=True)
@@ -339,3 +344,59 @@ class FertilizerViewSet(ModelViewSet, GenericViewSet):
     queryset = Fertilizer.objects.all()
 
     serializer_class = FertilizerSerializer
+
+
+class SearchViewSet(ViewSet):
+    """
+    This view help you search either culture , soil or fertilizer
+    you just need to provide query parameters ?soil=<soil_type> , ?culture=<culture_name> or ?fertilizer=<fertilizer_name>
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        culture = request.query_params.get("culture", None)
+
+        soil = request.query_params.get("soil", None)
+
+        fertilizer = request.query_params.get("fertilizer", None)
+
+        if culture:
+            cultures = Culture.objects.filter(name__icontains=culture)
+
+            return Response(
+                {
+                    "results": CultureSerializer(
+                        cultures, many=True, context={"request", request}
+                    ).data,
+                }
+            )
+
+        if soil:
+            soils = Soil.objects.filter(type__icontains=soil)
+
+            return Response(
+                {
+                    "results": SoilDetailSerializer(
+                        soils, many=True, context={"request", request}
+                    ).data
+                }
+            )
+        if fertilizer:
+            fertilizers = Fertilizer.objects.filter(name__icontains=fertilizer)
+
+            return Response(
+                {
+                    "results": FertilizerSerializer(
+                        fertilizers, many=True, context={"request", request}
+                    ).data
+                }
+            )
+
+        if not soil or not culture or not fertilizer:
+            return Response(
+                {
+                    "error": "Please provide query params either `soil`,`culture` ,or `fertilizer` "
+                },
+                status=404,
+            )
