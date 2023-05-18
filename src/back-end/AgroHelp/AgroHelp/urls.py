@@ -22,6 +22,8 @@ from drf_yasg import openapi
 from django.conf import settings
 from django.conf.urls.static import static
 
+from rest_framework.documentation import include_docs_urls
+
 schema_view = get_schema_view(
     openapi.Info(
         title="AgroHelp API",
@@ -35,21 +37,14 @@ schema_view = get_schema_view(
     permission_classes=[permissions.AllowAny],
 )
 
+admin.site.site_header = "AgroHelp Admin"
+admin.site.site_title = "AgroHelp Admin"
+# admin.site.site_url = "https:trix-car-backend.vercel.app"
+admin.site.index_title = "AgroHelp Administration"
+admin.empty_value_display = "**Empty**"
+
 urlpatterns = [
     path("admin/", admin.site.urls),
-    re_path(
-        r"^swagger(?P<format>\.json|\.yaml)$",
-        schema_view.without_ui(cache_timeout=0),
-        name="schema-json",
-    ),
-    path(
-        "api/docs/",
-        schema_view.with_ui("swagger", cache_timeout=0),
-        name="core-swagger-ui",
-    ),
-    # path('', include('core.urls')),
-    # path('api/', include('core.api_urls')),
-    # path('api/', include('accounts.api_urls')),
     path(
         "api/",
         include(
@@ -57,9 +52,45 @@ urlpatterns = [
                 path("account/", include("accounts.api_urls")),
                 path("core/", include("core.api_urls")),
                 path("forum/", include("forum.urls")),
+                path(
+                    "docs/",
+                    include(
+                        [
+                            re_path(
+                                r"^swagger(?P<format>\.json|\.yaml)$",
+                                schema_view.without_ui(cache_timeout=0),
+                                name="schema-json",
+                            ),
+                            re_path(
+                                r"^$",
+                                schema_view.with_ui("swagger", cache_timeout=0),
+                                name="api-docs",
+                            ),
+                            re_path(
+                                r"^swagger/$",
+                                schema_view.with_ui("swagger", cache_timeout=0),
+                                name="schema-swagger-ui",
+                            ),
+                            re_path(
+                                r"^redoc/$",
+                                schema_view.with_ui("redoc", cache_timeout=0),
+                                name="schema-redoc",
+                            ),
+                            re_path(
+                                r"^default/",
+                                include_docs_urls(
+                                    title="AgroHelp API",
+                                    description="AgroHelp Api documentation",
+                                ),
+                                name="default-docs",
+                            ),
+                        ]
+                    ),
+                ),
             ]
         ),
     ),
+    path("api-auth/", include("rest_framework.urls"), name="api-auth"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
