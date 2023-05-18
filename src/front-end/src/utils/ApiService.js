@@ -410,4 +410,15 @@ export default class ApiService {
     });
     return res;
   }
+
+  static async search(key, value, token) {
+    const url = this.endPoint + `/core/search/?${key}=${value}`;
+    const res = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${token}`,
+      },
+    });
+    return res;
+  }
 }
