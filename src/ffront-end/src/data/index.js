@@ -28,7 +28,7 @@ const REVIEWS = {
   },
 };
 
-export const TLLNESS = {
+export const HOTELS = {
   1: {
     id: 1,
     title: 'Potato illness case 1',
@@ -172,7 +172,7 @@ export const TOP_PLACES = [
       require('../../assets/images/crops/af933a359582704eee05be198e882be0.jpg'),
     ],
     reviews: [REVIEWS[2], REVIEWS[1]],
-    sicks: [TLLNESS[9], TLLNESS[10]],
+    sicks: [HOTELS[9], HOTELS[10]],
     type: 'PLACE',
   },
   {
@@ -185,7 +185,7 @@ export const TOP_PLACES = [
     rating: 8.9,
     gallery: [],
     reviews: [REVIEWS[1], REVIEWS[2]],
-    sicks: [TLLNESS[11], TLLNESS[12]],
+    sicks: [HOTELS[11], HOTELS[12]],
     type: 'PLACE',
   },
   {
@@ -198,7 +198,7 @@ export const TOP_PLACES = [
     rating: 7.4,
     gallery: [],
     reviews: [REVIEWS[1], REVIEWS[2]],
-    sicks: [TLLNESS[13], TLLNESS[14]],
+    sicks: [HOTELS[13], HOTELS[14]],
     type: 'PLACE',
   },
 ];
@@ -218,7 +218,7 @@ export const PLACES = [
       require('../../assets/images/crops/c68a4484f89d0c087ebdaa43629d2a7a.jpg'),
     ],
     reviews: [REVIEWS[1], REVIEWS[2]],
-    sicks: [TLLNESS[1], TLLNESS[2]],
+    sicks: [HOTELS[1], HOTELS[2]],
     type: 'PLACE',
   },
   {
@@ -231,7 +231,7 @@ export const PLACES = [
     rating: 9.1,
     gallery: [],
     reviews: [REVIEWS[2], REVIEWS[1]],
-    sicks: [TLLNESS[3], TLLNESS[4]],
+    sicks: [HOTELS[3], HOTELS[4]],
     type: 'PLACE',
   },
   {
@@ -244,7 +244,7 @@ export const PLACES = [
     rating: 8.9,
     gallery: [],
     reviews: [REVIEWS[1], REVIEWS[2]],
-    sicks: [TLLNESS[5], TLLNESS[6]],
+    sicks: [HOTELS[5], HOTELS[6]],
     type: 'PLACE',
   },
   {
@@ -257,7 +257,7 @@ export const PLACES = [
     rating: 9.2,
     gallery: [],
     reviews: [REVIEWS[2], REVIEWS[1]],
-    sicks: [TLLNESS[7], TLLNESS[8]],
+    sicks: [HOTELS[7], HOTELS[8]],
     type: 'PLACE',
   },
 ];
@@ -267,9 +267,9 @@ export const SEARCH_PLACES = [...PLACES, ...TOP_PLACES].map(item => ({
   id: Math.random().toString(),
 }));
 
-export const SEARCH_TLLNESS = [...Object.values(TLLNESS)].map(item => ({
+export const SEARCH_HOTELS = [...Object.values(HOTELS)].map(item => ({
   ...item,
   id: Math.random().toString(),
 }));
 
-export const SEARCH_ALL = [...SEARCH_PLACES, ...SEARCH_TLLNESS];
+export const SEARCH_ALL = [...SEARCH_PLACES, ...SEARCH_HOTELS];
