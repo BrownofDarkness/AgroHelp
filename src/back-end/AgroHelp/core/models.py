@@ -21,34 +21,29 @@ class Soil(models.Model):
 class Culture(models.Model):
     photo = models.ImageField(upload_to="culture", blank=True, null=True)
     name = models.CharField(max_length=255)
-
+    category = models.CharField(max_length=255)
+    description = models.TextField()
+    
     def __str__(self):
         return self.name
 
     def photo_preview(self):
         if self.photo:
-            return format_html(
-                f"<img src='{self.photo.url}' width='400px' heigth='400px' classs='rounded float-right' />"
-            )
+            return format_html(f"<img src='{self.photo.url}' width='400px' heigth='400px' class='rounded float-right' />")
+        
         return None
 
 
 class SoilCulture(models.Model):
-    soil = models.ForeignKey(
-        Soil, on_delete=models.CASCADE, related_name="soil_culture"
-    )
-    culture = models.ForeignKey(
-        Culture, on_delete=models.CASCADE, related_name="soil_culture"
-    )
+    soil = models.ForeignKey(Soil, on_delete=models.CASCADE, related_name="soil_culture")
+    
+    culture = models.ForeignKey(Culture, on_delete=models.CASCADE, related_name="soil_culture")
 
     def __str__(self) -> str:
         return f"{self.culture} best in {self.soil}"
 
     class Meta:
-        unique_together = (
-            "soil",
-            "culture",
-        )
+        unique_together = ("soil","culture",)
 
 
 class Parcel(models.Model):
@@ -62,12 +57,9 @@ class Parcel(models.Model):
 
 
 class CultureParcel(models.Model):
-    culture = models.ForeignKey(
-        Culture, on_delete=models.CASCADE, related_name="parcel"
-    )
-    parcel = models.ForeignKey(
-        Parcel, on_delete=models.CASCADE, related_name="cultures"
-    )
+    culture = models.ForeignKey(Culture, on_delete=models.CASCADE, related_name="parcel")
+    
+    parcel = models.ForeignKey(Parcel, on_delete=models.CASCADE, related_name="cultures")
 
     def __str__(self):
         return f"{self.culture} {self.parcel}"
@@ -77,10 +69,10 @@ class CultureParcel(models.Model):
 
 
 class SoilArea(models.Model):
-    name = models.CharField(
-        help_text="Name of the agricultural practice", max_length=255
-    )
+    name = models.CharField(help_text="Name of the soil area", max_length=255)
+    
     soil = models.ForeignKey(Soil, on_delete=models.CASCADE, related_name="areas")
+    
     polygon = models.PolygonField(srid=4326)
 
     def __str__(self) -> str:
@@ -88,12 +80,10 @@ class SoilArea(models.Model):
 
 
 class AgriculturePractice(models.Model):
-    name = models.CharField(
-        help_text="Name of the agricultural practice", max_length=255
-    )
-    culture = models.ForeignKey(
-        Culture, on_delete=models.CASCADE, related_name="agriculture_practice"
-    )
+    name = models.CharField(help_text="Name of the agricultural practice", max_length=255)
+    
+    culture = models.ForeignKey(Culture, on_delete=models.CASCADE, related_name="agriculture_practice")
+    
     practise = models.TextField()
 
     def __str__(self) -> str:
