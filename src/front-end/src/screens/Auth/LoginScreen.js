@@ -33,10 +33,14 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const onForgotPasswordPressed = () => {
-    navigation.navigate("Home");
+    navigation.navigate("Home", { screen: "Parcel" });
   };
   const onregisterPressed = () => {
     navigation.navigate("Register");
+  };
+
+  const onNotificationPressed = () => {
+    navigation.navigate("Home", { screen: "Notifier" });
   };
 
   return (
@@ -71,6 +75,12 @@ const LoginScreen = ({ navigation }) => {
         onPress={onForgotPasswordPressed}
         type="TERTIARY"
       />
+
+      <CustomButton
+        text="Forgo"
+        onPress={onNotificationPressed}
+        type="TERTIARY"
+      />
     </View>
   );
 };
@@ -79,6 +89,7 @@ const styles = StyleSheet.create({
   root: {
     alignItems: "center",
     padding: 20,
+    flex: 1,
   },
   logo: {
     width: 300,
@@ -89,14 +100,14 @@ const styles = StyleSheet.create({
   login: {
     marginBottom: 2,
     marginTop: 0,
-    color: "#3B71F3",
+    color: "#025592",
     fontSize: 50,
     fontWeight: "bold",
   },
   info: {
     color: "green",
     fontSize: 20,
-    marginBottom: 20,
+    flex: 1,
   },
 });
 
