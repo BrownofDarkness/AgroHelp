@@ -74,7 +74,7 @@ const RegisterScreen = ({ navigation }) => {
         secureTextEntry={true}
       />
 
-      <CustomButtonReg text="Register" onPress={onregisterPressed} />
+      <CustomButton text="Register" onPress={onregisterPressed} />
       <CustomButtonReg text="Back" onPress={() => navigation.goBack()} />
     </View>
   );
@@ -83,25 +83,24 @@ const RegisterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   root: {
     alignItems: "center",
+    flex: 1,
     padding: 20,
   },
   logo: {
     width: 300,
     maxWidth: 100,
     maxHeight: 200,
-    marginBottom: 0,
   },
   login: {
-    marginBottom: 2,
-    marginTop: 0,
-    color: "#3B71F3",
+    marginBottom: 0.5,
+    color: "#025592",
     fontSize: 40,
     fontWeight: "bold",
   },
   info: {
     color: "green",
     fontSize: 15,
-    marginBottom: 20,
+    marginBottom: 10,
   },
 });
 

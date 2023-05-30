@@ -2,7 +2,6 @@ import React from "react";
 import AuthStack from "./AuthStack";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import AddParcelScreen from "../screens/Home/Parcel/AddParcel";
 
 import HomeStack from "./HomeStack";
 
@@ -19,7 +18,7 @@ const index = () => {
         />
         <Stack.Screen
           name="Home"
-          component={AddParcelScreen}
+          component={HomeStack}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
