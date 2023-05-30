@@ -174,6 +174,7 @@ class CultureViewSet(
     ListModelMixin,
     UpdateModelMixin,
     RetrieveModelMixin,
+    CreateModelMixin,
     GenericViewSet,
 ):
     def get_serializer_class(self):
@@ -254,9 +255,17 @@ class CultureViewSet(
 
     @action(methods=["GET"], detail=False)
     def populars(self, request, *args, **kwargs):
-        popular_cultures = Culture.objects.annotate(
-            num_parcels=Count("parcel")
-        ).order_by("-num_parcels")
+        # popular_cultures = (
+        #     Culture.objects.annotate(num_parcels=Count("parcel"))
+        #     .select_related("parcel")
+        #     .order_by("-num_parcels")
+        # )
+
+        popular_cultures = (
+            Culture.objects.annotate(culture_count=Count("parcel"))
+            .filter(culture_count__gt=0)
+            .order_by("-culture_count")
+        )
 
         return Response(
             CultureSerializer(
