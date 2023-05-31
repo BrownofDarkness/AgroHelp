@@ -14,9 +14,12 @@ const HomeScreen = () => {
       <MainHeader title="Agro App" />
       <ScreenHeader mainTitle="Hello Borista" secondTitle="We offer just the Best" />
       <ScrollView showsVerticalScrollIndicator={false}>
+      <SectionHeader
+          title="Cultivatable Crops"
+        />
         <TopPlacesCarousel list={TOP_PLACES} />
         <SectionHeader
-          title="Popular Crops"
+          title="Other Crops"
           buttonTitle="See All"
           onPress={() => {}}
         />
