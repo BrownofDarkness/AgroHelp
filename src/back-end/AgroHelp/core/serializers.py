@@ -123,7 +123,6 @@ class SoilAreaSerializerCreate(serializers.GeoFeatureModelSerializer):
 
 
 class AgriculturePracticeSerializer(serializers.ModelSerializer):
-    culture = _CultureSerializer()
 
     class Meta:
         model = AgriculturePractice

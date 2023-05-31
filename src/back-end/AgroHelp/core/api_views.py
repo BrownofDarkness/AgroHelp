@@ -257,9 +257,9 @@ class CultureViewSet(
         popular_cultures = Culture.objects.annotate(
             num_parcels=Count("parcel")
         ).order_by("-num_parcels")
-
+        
         return Response(
-            CultureSerializer(
+            _CultureSerializer(
                 popular_cultures[: random.randrange(10, 20)],
                 many=True,
                 context={"request": request},

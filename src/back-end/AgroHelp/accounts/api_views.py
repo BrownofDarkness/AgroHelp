@@ -28,12 +28,11 @@ User = get_user_model()
 
 class LoginViewSet(CreateModelMixin, GenericViewSet):
     serializer_class = LoginSerializer
-    permission_classes = [
-        AllowAny,
-    ]
+    permission_classes = [AllowAny,]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=self.request.data)
+        print(self.request.data)
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data.get("email")
         password = serializer.validated_data.get("password")
