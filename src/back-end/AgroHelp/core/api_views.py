@@ -260,20 +260,37 @@ class CultureViewSet(
         #     .select_related("parcel")
         #     .order_by("-num_parcels")
         # )
+        
+        parcels = Parcel.objects.filter(user=request.user.id)
 
         popular_cultures = (
             Culture.objects.annotate(culture_count=Count("parcel"))
             .filter(culture_count__gt=0)
             .order_by("-culture_count")
         )
+        
+        _popcultures = _CultureSerializer(
+                popular_cultures, many=True, context={"request": request}
+        ).data
+        
+        
+        results = []
 
-        return Response(
-            _CultureSerializer(
-                popular_cultures[: random.randrange(10, 20)],
-                many=True,
-                context={"request": request},
-            ).data
-        )
+        for culture in _popcultures:
+            """
+            Here i will check if a user practise this culture
+            """
+            # favorite = Culture.objects.filter(
+            #     Q(parcel__culture__id=culture["id"]) & Q(parcel__parcel__in=parcels)
+            # ).exists()
+            favorite = Culture.objects.filter(
+                parcel__culture__id=culture["id"], parcel__parcel__in=parcels
+            ).exists()
+            data = {"culture": culture, "favorite": favorite}
+
+            results.append(data)
+
+        return Response(results)
 
     @action(methods=["GET"], detail=False)
     def recommended(self, request, *args, **kwargs):
