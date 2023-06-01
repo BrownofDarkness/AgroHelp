@@ -140,6 +140,17 @@ const MainNavigator = () => {
           //   gestureEnabled: false,
           // }}
         />
+
+        <Stack.Screen
+          name="Notification"
+          component={Notification}
+          // options={{
+          //   headerShown: false,
+          //   useNativeDriver: true,
+          //   gestureEnabled: false,
+          // }}
+        />
+
         <Stack.Screen
           name="Menu"
           component={Menu}

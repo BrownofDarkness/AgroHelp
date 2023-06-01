@@ -76,11 +76,11 @@ const LoginScreen = ({ navigation }) => {
         type="TERTIARY"
       />
 
-      <CustomButton
+      {/* <CustomButton
         text="Forgo"
         onPress={onNotificationPressed}
         type="TERTIARY"
-      />
+      /> */}
     </View>
   );
 };

@@ -59,6 +59,13 @@ const Menu = () => {
       </TouchableOpacity>
 
       <TouchableOpacity
+        style={[styles.button, selectedButton === 'AddParcel' && styles.selectedButton]}
+        onPress={() => handleButtonPress('AddParcel')}
+      >
+        <Text style={styles.buttonText}>Add New Parcel</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
         style={[styles.button, selectedButton === 'contact' && styles.selectedButton]}
         onPress={() => handleButtonPress('contact')}
       >
