@@ -2,22 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import axios from 'axios';
 
 // import { Image } from 'react-native';
 
 const Menu = () => {
   const navigation = useNavigation();
   const [selectedButton, setSelectedButton] = useState(null);
-  // const [weather, setWeather] = useState(null);
+  const [weather, setWeather] = useState(null);
 
-  // useEffect(() => {
-  //   // Fetch weather data from API based on user's location
-  //   // Replace 'API_KEY' and 'latitude,longitude' with the appropriate values
-  //   fetch(`https://api.weatherapi.com/v1/current.json?key=API_KEY&q=latitude,longitude`)
-  //     .then(response => response.json())
-  //     .then(data => setWeather(null))
-  //     .catch(error => console.error(error));
-  // }, []);
+  useEffect(() => {
+    // Fetch weather data from API based on user's location
+    // Replace 'API_KEY' and 'latitude,longitude' with the appropriate values
+    fetch(`https://api.weatherapi.com/v1/current.json?key=acbc1629d4192a8cb3c8e6c6abd33fe0&q=latitude,longitude`)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setWeather(data)})
+      .catch(error => console.error(error));
+  }, []);
 
   const handleButtonPress = (screenName) => {
     navigation.navigate(screenName);
@@ -27,6 +31,7 @@ const Menu = () => {
   const handleBackPress = () => {
     navigation.goBack();
   };
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -59,15 +64,15 @@ const Menu = () => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.button, selectedButton === 'AddParcel' && styles.selectedButton]}
-        onPress={() => handleButtonPress('AddParcel')}
+        style={[styles.button, selectedButton === 'Parcels' && styles.selectedButton]}
+        onPress={() => handleButtonPress('Parcels')}
       >
-        <Text style={styles.buttonText}>Add New Parcel</Text>
+        <Text style={styles.buttonText}>Choose Parcel</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.button, selectedButton === 'contact' && styles.selectedButton]}
-        onPress={() => handleButtonPress('contact')}
+        style={[styles.button, selectedButton === 'Contact' && styles.selectedButton]}
+        onPress={() => handleButtonPress('Contact')}
       >
         <Text style={styles.buttonText}>Contact Us</Text>
       </TouchableOpacity>
@@ -79,12 +84,12 @@ const Menu = () => {
         <Text style={styles.buttonText}>Rate</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={[styles.button, selectedButton === 'Test' && styles.selectedButton]}
-        onPress={() => handleButtonPress('Test')}
+      {/* <TouchableOpacity
+        style={[styles.button, selectedButton === 'Parcels' && styles.selectedButton]}
+        onPress={() => handleButtonPress('Parcels')}
       >
-        <Text style={styles.buttonText}>Test</Text>
-      </TouchableOpacity>
+        <Text style={styles.buttonText}>Change Soil</Text>
+      </TouchableOpacity> */}
 
       <TouchableOpacity
         style={[styles.button, selectedButton === 'DescriptionPage' && styles.selectedButton]}
@@ -93,19 +98,28 @@ const Menu = () => {
         <Text style={styles.buttonText}>Test Description</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={[styles.button, selectedButton === 'LogoutScreen' && styles.selectedButton]}
+        onPress={() => handleButtonPress('LogoutScreen')}
+        // {isLoggedIn && <Button title="Logout" onPress={handleLogout} />}
+      >
+        <Text style={styles.buttonText}>Logout</Text>
+      </TouchableOpacity>
+
+
 
    {/* <Image source={require('./assets/weather-image.png')} style={styles.weatherImage} /> */}
-      <View style={styles.weatherContainer}>
+      {/* <View style={styles.weatherContainer}>
           <Text style={styles.weatherText}>The weather in your area now is:</Text>
           <Text style={styles.weatherText}>10°C</Text>
-        </View>
+        </View> */}
 
-      {/* {weather && (
+      {weather && (
         <View style={styles.weatherContainer}>
           <Text style={styles.weatherText}>The weather in your area now is:</Text>
-          <Text style={styles.weatherText}>{weather.current.temp_c}°C</Text>
+          <Text style={styles.weatherText}>{weather?.current?.temp_c}°C</Text>
         </View>
-      )} */}
+      )}
     </ScrollView>
   );
 };
@@ -119,7 +133,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 12,
   },
   heading: {
     fontSize: 24,
@@ -140,7 +154,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
   },
   weatherContainer: {
-    marginTop: 200,
+    marginTop: 170,
     alignItems: 'center',
   },
   weatherText: {
@@ -159,6 +173,37 @@ export default Menu;
 
 
 
+
+
+
+
+
+// const LogoutScreen = ({ navigation }) => {
+//   useEffect(() => {
+//     logout();
+//   }, []);
+
+//   const logout = async () => {
+//     try {
+//       // Make an API call to your Django backend to perform the logout action
+//       await axios.post('https://your-django-backend/logout/');
+
+//       // Clear user data from AsyncStorage or any other storage mechanism
+//       await AsyncStorage.clear();
+
+//       // Redirect the user to the login screen
+//       navigation.replace('Login');
+//     } catch (error) {
+//       console.log('Logout error:', error);
+//     }
+//   };
+
+//   return (
+//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//       <Text>Logging out...</Text>
+//     </View>
+//   );
+// };
 
 
 

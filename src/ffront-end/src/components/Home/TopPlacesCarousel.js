@@ -16,22 +16,24 @@ const TopPlacesCarousel = ({list}) => {
     <Carousel
       items={list}
       renderItem={({item, style}) => {
+        const {culture,favortite}=item
         return (
           <Card
+            key={culture.id}
             style={[styles.card, style]}
             shadowType="dark"
             onPress={() => {
-              navigation.navigate('CropDetails', {trip: item});
+              navigation.navigate('DescriptionPage', {trip: culture});
             }}>
             <CardFavoriteIcon active={false} onPress={() => {}} />
             <SharedElement
-              id={`trip.${item.id}.image`}
+              id={`trip.${culture.id}.image`}
               style={StyleSheet.absoluteFillObject}>
-              <CardMedia source={item.image} borderBottomRadius />
+              <CardMedia source={{uri:culture.photo}} borderBottomRadius />
             </SharedElement>
             <View style={styles.titleBox}>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.location}>{item.location}</Text>
+              <Text style={styles.title}>{culture.name}</Text>
+              <Text style={styles.location} numberOfLines={1}>{culture.description}</Text>
             </View>
           </Card>
         );

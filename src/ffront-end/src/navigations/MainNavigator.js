@@ -11,15 +11,21 @@ import ChatScreen from '../screens/ChatScreen';
 import Contact from '../screens/Contact-us';
 import Rate from '../screens/Rate';
 import Test from '../screens/Test';
-import AddParcelScreen from '../screens/Home/Parcel/AddParcel';
+// import AddParcelScreen from '../screens/Home/Parcel/AddParcel';
 import DescriptionPage from '../screens/DescriptionPage';
 import WelcomeScreen from '../screens/Auth/WelcomeScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
+import { useAuth } from '../context/AuthContext';
+
+
 
 const Stack = createSharedElementStackNavigator();
 
 const MainNavigator = () => {
+
+  const {token} = useAuth()
+
   return (
     <NavigationContainer>
       <StatusBar hidden />

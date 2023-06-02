@@ -20,7 +20,16 @@ import { useAuth } from "../../../context/AuthContext";
 import * as Location from "expo-location";
 import Icon from "react-native-vector-icons/Ionicons";
 import MainNavigator from '../../../navigations/MainNavigator';
+import * as Font from 'expo-font';
+import { Ionicons } from '@expo/vector-icons';
+import ApiService from "../../../utils/ApiService";
 
+
+const loadFonts = async () => {
+  await Font.loadAsync({
+    Ionicons: require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
+  });
+};
 const { StatusBarManager } = NativeModules;
 
 const AddParcelScreen = ({ navigation }) => {
@@ -64,6 +73,10 @@ const AddParcelScreen = ({ navigation }) => {
     setCoords({ lng: longitude, lat: latitude });
   };
 
+  // await Font.loadAsync({
+  //   Ionicons: require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
+  // });
+
   const saveUserParcel = () => {
     if (!name || !landSize || !coords.lng || !coords.lat) {
       return setError("Please make sure you fill all the require informations");
@@ -76,8 +89,8 @@ const AddParcelScreen = ({ navigation }) => {
       user: user.id,
     };
 
-    ApiService.saveUserParcel(JSON.stringigy(data), token)
-      .then((res) => res.json)
+    ApiService.createUserParcel(JSON.stringify(data), token)
+      .then((res) => res.json())
       .then((data) => {
         if (data.success) {
           console.log("Parcel added");
@@ -86,6 +99,7 @@ const AddParcelScreen = ({ navigation }) => {
               text: "Ok",
               onPress: () => console.log("Ok"),
             },
+            navigation.navigate('Test',{parcel:data.data})
           ]);
         } else {
           Alert.alert("Error", "Some thing went wrong", [
