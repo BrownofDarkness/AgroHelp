@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  # Django application
+  parcel_service:
+    image: parcel_service
+    restart: unless-stopped
+    build: 
+      context: .
+    volumes:
+      - .:/parcel_service
+    ports:
+      - 8003:8003
+    container_name: parcel_service
+    command: python manage.py runserver 0.0.0.0:8003
+    networks:
+      - bridge
+networks:
+  bridge:
+    driver: bridge
+    name: network
