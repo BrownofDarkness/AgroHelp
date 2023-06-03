@@ -1,8 +1,17 @@
 from rest_framework import serializers
 
-from .models import Forum, ForumComment
+from .models import Forum, ForumComment, User
 
-from accounts.serializers import UserSerializer
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "email", "type"]
+        extra_kwargs = {
+            "email": {
+                "required": True,
+            },
+        }
 
 
 class ForumCommentSerializer(serializers.ModelSerializer):

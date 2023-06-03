@@ -31,8 +31,7 @@ class PublicForumConsumer(AsyncWebsocketConsumer):
         message: dict = text_data_json["message"]
 
         await self.channel_layer.group_send(
-            self.room_name, {"type": "send_message", "message": (
-                )}
+            self.room_name, {"type": "send_message", "message": message}
         )
 
 
@@ -68,13 +67,7 @@ class ForumConsumer(AsyncWebsocketConsumer):
         forum: int = data.get("forum", None)
         parent: int = data.get("parent", None)
         msg_data = self.save_forum_comment(forum=forum, content=content, parent=parent)
-        {
-        "message":{
-            "msg_type":"forum_commented",
-            "parent":1,
-            "content":"dsasdasdasd"
-        }
-        }
+
         # if parent:
         #   message = {
         #       'msg_type':'forum_commented',
