@@ -1,66 +1,66 @@
 from rest_framework import serializers
 
-from .models import Forum, ForumPost, ForumCommentVote, ForumPostComment
+from .models import Forum, ForumComment
 
 from accounts.serializers import UserSerializer
 
 
-class ForumPostCommentSerializer(serializers.ModelSerializer):
+class ForumCommentSerializer(serializers.ModelSerializer):
     replies = serializers.SerializerMethodField()
 
     class Meta:
-        model = ForumPostComment
+        model = ForumComment
         fields = "__all__"
 
-    def get_repplies(self, obj: ForumPostComment):
-        replies = ForumPostComment.objects.filter(parent=obj)
+    def get_replies(self, obj: ForumComment):
+        replies = ForumComment.objects.filter(parent=obj)
 
-        return ForumPostCommentSerializer(replies, many=True).data
+        return ForumCommentSerializer(replies, many=True).data
 
 
-class ForumPostCommentListSerializer(serializers.ModelSerializer):
+class ForumCommentListSerializer(serializers.ModelSerializer):
     replies = serializers.SerializerMethodField()
     author = UserSerializer()
 
     class Meta:
-        model = ForumPostComment
+        model = ForumComment
         fields = "__all__"
 
-    def get_repplies(self, obj: ForumPostComment):
-        replies = ForumPostComment.objects.filter(parent=obj)
+    def get_repplies(self, obj: ForumComment):
+        replies = ForumComment.objects.filter(parent=obj)
 
-        return ForumPostCommentSerializer(replies, many=True).data
+        return ForumCommentSerializer(replies, many=True).data
 
 
-class ForumPostSerializer(serializers.ModelSerializer):
+class ForumCommentSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
 
     class Meta:
-        model = ForumPost
+        model = ForumComment
 
         fields = "__all__"
 
-    def get_comments(self, obj: ForumPost):
-        comments = ForumPostComment.objects.filter(post=obj)
+    def get_comments(self, obj: ForumComment):
+        comments = ForumComment.objects.filter(forum=obj)
 
-        return ForumPostCommentListSerializer(
+        return ForumCommentListSerializer(
             comments, many=True, context={"request": self.context["request"]}
         ).data
 
 
-class ForumPostListSerializer(serializers.ModelSerializer):
+class ForumCommentListSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
     author = UserSerializer()
 
     class Meta:
-        model = ForumPost
+        model = ForumComment
 
         fields = "__all__"
 
-    def get_comments(self, obj: ForumPost):
-        comments = ForumPostComment.objects.filter(post=obj)
+    def get_comments(self, obj: Forum):
+        comments = ForumComment.objects.filter(forum=obj)
 
-        return ForumPostCommentSerializer(
+        return ForumCommentSerializer(
             comments, many=True, context={"request": self.context["request"]}
         ).data
 
@@ -73,8 +73,8 @@ class ForumSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_messages(self, obj: Forum):
-        messages_instance = ForumPost.objects.filter(forum=obj)
-        message_serializer = ForumPostListSerializer(
+        messages_instance = ForumComment.objects.filter(forum=obj)
+        message_serializer = ForumCommentListSerializer(
             messages_instance, many=True, context={"request": self.context["request"]}
         )
         return message_serializer.data
@@ -89,14 +89,8 @@ class ForumListSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_messages(self, obj: Forum):
-        messages_instance = ForumPost.objects.filter(forum=obj)
-        message_serializer = ForumPostListSerializer(
+        messages_instance = ForumComment.objects.filter(forum=obj)
+        message_serializer = ForumCommentListSerializer(
             messages_instance, many=True, context={"request": self.context["request"]}
         )
         return message_serializer.data
-
-
-class ForumCommentVoteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ForumCommentVote
-        fields = "__all__"

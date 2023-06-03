@@ -6,18 +6,15 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 # from rest_framework.views
 
 from .serializers import (
-    ForumPostCommentListSerializer,
-    ForumPostCommentSerializer,
-    ForumCommentVoteSerializer,
-    ForumPostListSerializer,
-    ForumPostSerializer,
-    ForumListSerializer,
     ForumSerializer,
+    ForumListSerializer,
+    ForumCommentListSerializer,
+    ForumCommentSerializer,
 )
 
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Forum, ForumPost, ForumPostComment, ForumCommentVote
+from .models import Forum, ForumComment
 
 # Create your views here.
 
@@ -37,32 +34,16 @@ class ForumViewSet(ModelViewSet, GenericViewSet):
     queryset = Forum.objects.all()
 
 
-class ForumPostViewSet(ModelViewSet, GenericViewSet):
+class ForumCommentViewSet(ModelViewSet, GenericViewSet):
     """
     This api helps to get post created in a forum
     """
 
     permission_classes = [IsAuthenticated]
-    queryset = ForumPost.objects.all()
+    queryset = ForumComment.objects.all()
 
     def get_serializer_class(self):
         if self.action in ["list", "retrieve"]:
-            return ForumPostListSerializer
+            return ForumCommentListSerializer
 
-        return ForumPostSerializer
-
-
-class ForumPostCommentViewSet(ModelViewSet, GenericViewSet):
-    serializer_class = ForumPostCommentSerializer
-    permission_classes = [IsAuthenticated]
-    queryset = ForumPostComment.objects.all()
-
-    def get_serializer_class(self):
-        if self.action in ["list", "retrieve"]:
-            return ForumPostCommentListSerializer
-        return ForumPostCommentSerializer
-
-
-class ForumCommentVoteViewSet(ModelViewSet, GenericViewSet):
-    serializer_class = ForumCommentVoteSerializer
-    queryset = ForumCommentVote.objects.all()
+        return ForumCommentSerializer
