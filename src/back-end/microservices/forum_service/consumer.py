@@ -1,8 +1,13 @@
 import json, pika
-import asyncio
+import os
+import django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "forum_service.settings")
+django.setup(set_prefix=True)
 import traceback
-from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
+from rest_framework.authtoken.models import Token
+
+
 
 
 User = get_user_model()
@@ -48,7 +53,8 @@ def comsume_messages():
     channel.start_consuming()
 
 
-try:
-    comsume_messages()
-except Exception as e:
-    traceback.print_exc()
+if __name__ =='__main__':
+    try:
+        comsume_messages()
+    except Exception as e:
+        traceback.print_exc()
