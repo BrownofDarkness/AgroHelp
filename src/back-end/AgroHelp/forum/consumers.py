@@ -2,7 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
-from .models import Forum, ForumPost, ForumPostComment, ForumCommentVote
+from .models import Forum, ForumPost, ForumPostComment
 
 from .serializers import ForumPostSerializer, ForumPostCommentSerializer
 

@@ -10,6 +10,11 @@ from .serializers import _SoilSerializer
 def notify_culture_service(sender, instance, created, **kwargs):
     from .producer import publish
 
-    data = _SoilSerializer(instance)
+    data = _SoilSerializer(instance).data
+
     if created:
-        publish("soil_created", data.data)
+        message = {"type": "soil_created", "data": data}
+        publish("soil_created", message)
+    else:
+        message = {"type": "soil_updated", "data": data}
+        publish("soil_updated", message)
