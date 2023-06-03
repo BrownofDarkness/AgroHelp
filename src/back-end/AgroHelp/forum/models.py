@@ -8,8 +8,7 @@ User = get_user_model()
 
 
 class Forum(models.Model):
-    author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="post")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="post")
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -17,12 +16,11 @@ class Forum(models.Model):
         return self.content
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
 
 class ForumComment(models.Model):
-    forum = models.ForeignKey(
-        Forum, on_delete=models.CASCADE, related_name="comments")
+    forum = models.ForeignKey(Forum, on_delete=models.CASCADE, related_name="comments")
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     parent = models.ForeignKey(
         "self",
@@ -35,7 +33,7 @@ class ForumComment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def __str__(self) -> str:
         return f"{self.author} commented to {self.forum}"

@@ -178,8 +178,7 @@ class ParcelViewSet(
     @action(methods=["GET"], detail=True)
     def get_soils(self, request, *args, **kwargs):
         instance: Parcel = self.get_object()
-        soils = Soil.objects.filter(
-            areas__polygon__intersects=instance.location)
+        soils = Soil.objects.filter(areas__polygon__intersects=instance.location)
         return Response(SoilSerializer(soils, many=True).data)
 
 
