@@ -1,12 +1,10 @@
 import pika, json
-
-
-
+from django.conf import settings
 def publish(method, body: object | dict | str):
     try:
         # url = amqps://krimticf:rb_pr0-RABLjrHtEvKYUCa7lfQtMi8hG@jaragua.lmq.cloudamqp.com/krimticf
         credentials = pika.PlainCredentials("myuser", "mypass")
-        parameters = pika.ConnectionParameters("localhost", 5672, "/", credentials)
+        parameters = pika.ConnectionParameters(settings.RABBITMQ_HOST, 5672, "/", credentials)
         # RabbitMq
 
         # parameters = pika.URLParameters('amqps://krimticf:rb_pr0-RABLjrHtEvKYUCa7lfQtMi8hG@jaragua.lmq.cloudamqp.com/krimticf')
