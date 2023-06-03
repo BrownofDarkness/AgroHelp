@@ -1,18 +1,16 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
 
-class User(models.Model):
-    id = models.BigIntegerField(primary_key=True, auto_created=False)
+class User(AbstractUser):
     USER_TYPES = (("agriculteur", "agriculteur"), ("expert", "expert"))
     type = models.CharField(choices=USER_TYPES, max_length=20)
     email = models.EmailField(_("email address"), unique=True)
-    username = models.CharField(
-        _("username"), help_text="username", unique=True, max_length=120
-    )
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
 
 
 class Forum(models.Model):
