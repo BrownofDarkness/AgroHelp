@@ -1,8 +1,9 @@
 import json, pika
 import asyncio
 import traceback
-
+from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
+
 
 User = get_user_model()
 
@@ -26,7 +27,11 @@ def comsume_messages():
         data: dict = message.get("data", None)
 
         if msg_type == "user_created":
-            User.objects.create(**data)
+            user_data = data.get("user", None)
+            user = User.objects.create(**user_data)
+            user_token = data.get("token", None)
+            if user_token:
+                Token.objects.create(user=user, key=user_token)
             ch.basic_ack(delivery_tag=method.delivery_tag)
             print("User created!")
 
