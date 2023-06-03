@@ -18,6 +18,6 @@ class ForumAdmin(admin.ModelAdmin):
 
 @admin.register(ForumComment)
 class ForumCommentAdmin(admin.ModelAdmin):
-    list_display = ["forum", "author", "content", "created_at"]
+    list_display = ["forum", "author", "parent", "content", "created_at"]
 
     list_filter = ["created_at", "forum"]

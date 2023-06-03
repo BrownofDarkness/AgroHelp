@@ -26,22 +26,22 @@ class ForumCommentListSerializer(serializers.ModelSerializer):
         model = ForumComment
         fields = "__all__"
 
-    def get_repplies(self, obj: ForumComment):
+    def get_replies(self, obj: ForumComment):
         replies = ForumComment.objects.filter(parent=obj)
 
         return ForumCommentSerializer(replies, many=True).data
 
 
 class ForumCommentSerializer(serializers.ModelSerializer):
-    comments = serializers.SerializerMethodField()
+    replies = serializers.SerializerMethodField()
 
     class Meta:
         model = ForumComment
 
         fields = "__all__"
 
-    def get_comments(self, obj: ForumComment):
-        comments = ForumComment.objects.filter(forum=obj)
+    def get_replies(self, obj: ForumComment):
+        comments = ForumComment.objects.filter(parent=obj)
 
         return ForumCommentListSerializer(
             comments, many=True, context={"request": self.context["request"]}
@@ -49,7 +49,7 @@ class ForumCommentSerializer(serializers.ModelSerializer):
 
 
 class ForumCommentListSerializer(serializers.ModelSerializer):
-    comments = serializers.SerializerMethodField()
+    replies = serializers.SerializerMethodField()
     author = UserSerializer()
 
     class Meta:
@@ -57,22 +57,22 @@ class ForumCommentListSerializer(serializers.ModelSerializer):
 
         fields = "__all__"
 
-    def get_comments(self, obj: Forum):
-        comments = ForumComment.objects.filter(forum=obj)
+    def get_replies(self, obj: ForumComment):
+        comments = ForumComment.objects.filter(parent=obj)
 
-        return ForumCommentSerializer(
+        return ForumCommentListSerializer(
             comments, many=True, context={"request": self.context["request"]}
         ).data
 
 
 class ForumSerializer(serializers.ModelSerializer):
-    messages = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Forum
         fields = "__all__"
 
-    def get_messages(self, obj: Forum):
+    def get_comments(self, obj: Forum):
         messages_instance = ForumComment.objects.filter(forum=obj)
         message_serializer = ForumCommentListSerializer(
             messages_instance, many=True, context={"request": self.context["request"]}
@@ -81,14 +81,14 @@ class ForumSerializer(serializers.ModelSerializer):
 
 
 class ForumListSerializer(serializers.ModelSerializer):
-    messages = serializers.SerializerMethodField()
-    creator = UserSerializer()
+    comments = serializers.SerializerMethodField()
+    author = UserSerializer()
 
     class Meta:
         model = Forum
         fields = "__all__"
 
-    def get_messages(self, obj: Forum):
+    def get_comments(self, obj: Forum):
         messages_instance = ForumComment.objects.filter(forum=obj)
         message_serializer = ForumCommentListSerializer(
             messages_instance, many=True, context={"request": self.context["request"]}

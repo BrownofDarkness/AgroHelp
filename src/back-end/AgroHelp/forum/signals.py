@@ -14,7 +14,7 @@ def notify_all_farmers_on_new_forum(sender, instance, created, **kwargs):
             from asgiref.sync import async_to_sync
             import asyncio, json
 
-            forum_data = ForumSerializer(instance).data
+            forum_data = ForumSerializer(instance, context={"request": None}).data
 
             message: dict = {"msg_type": "forum_created", "data": forum_data}
 
@@ -39,7 +39,7 @@ def notify_a_forum_on_new_comment(sender, instance, created, **kwargs):
     from asgiref.sync import async_to_sync
     import asyncio, json
 
-    forum_comment = ForumCommentSerializer(instance).data
+    forum_comment = ForumCommentSerializer(instance, context={"request": None}).data
     if created:
         try:
             message: dict = {"msg_type": "forum_commented", "data": forum_comment}

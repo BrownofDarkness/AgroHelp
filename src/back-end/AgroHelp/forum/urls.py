@@ -6,7 +6,7 @@ from . import views
 router = DefaultRouter()
 
 router.register("forum", views.ForumViewSet, basename="forum")
-router.register("forum-post", views.ForumCommentViewSet, basename="forum-post")
+router.register("forum-comment", views.ForumCommentViewSet, basename="forum-post")
 
 urlpatterns = []
 
