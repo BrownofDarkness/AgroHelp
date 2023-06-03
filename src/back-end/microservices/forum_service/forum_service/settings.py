@@ -58,6 +58,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "forum_service.urls"
 
+AUTH_USER_MODEL='forum.User'
+
 
 TEMPLATES = [
     {
