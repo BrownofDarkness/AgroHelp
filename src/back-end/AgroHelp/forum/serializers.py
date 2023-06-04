@@ -33,19 +33,15 @@ class ForumCommentListSerializer(serializers.ModelSerializer):
 
 
 class ForumCommentSerializer(serializers.ModelSerializer):
-    replies = serializers.SerializerMethodField()
 
     class Meta:
         model = ForumComment
 
-        fields = "__all__"
+        exclude = ('author',)
+    def save(self, **kwargs):
 
-    def get_replies(self, obj: ForumComment):
-        comments = ForumComment.objects.filter(parent=obj)
-
-        return ForumCommentListSerializer(
-            comments, many=True, context={"request": self.context["request"]}
-        ).data
+        author = self.context["request"].user
+        return super().save(author=author,**kwargs)
 
 
 class ForumCommentListSerializer(serializers.ModelSerializer):
@@ -66,7 +62,6 @@ class ForumCommentListSerializer(serializers.ModelSerializer):
 
 
 class ForumSerializer(serializers.ModelSerializer):
-    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Forum
@@ -75,16 +70,9 @@ class ForumSerializer(serializers.ModelSerializer):
             "author",
         ]
 
-    def get_comments(self, obj: Forum):
-        messages_instance = ForumComment.objects.filter(forum=obj)
-        message_serializer = ForumCommentListSerializer(
-            messages_instance, many=True, context={"request": self.context["request"]}
-        )
-        return message_serializer.data
-
     def save(self, **kwargs):
         author = self.context["request"].user
-        print(author.id)
+        print("Validated Data",self.validated_data)
         forum = Forum.objects.create(
             content=self.validated_data["content"], author=author
         )

@@ -1,6 +1,6 @@
 import pika, json
 from django.conf import settings
-def publish(method, body: object | dict | str):
+def publish(method, body):
     try:
         # url = amqps://krimticf:rb_pr0-RABLjrHtEvKYUCa7lfQtMi8hG@jaragua.lmq.cloudamqp.com/krimticf
         credentials = pika.PlainCredentials("myuser", "mypass")

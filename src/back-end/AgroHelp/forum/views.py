@@ -2,7 +2,8 @@ from django.shortcuts import render
 
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-
+from rest_framework.response import Response
+from rest_framework import status
 # from rest_framework.views
 
 from .serializers import (
@@ -30,6 +31,13 @@ class ForumViewSet(ModelViewSet, GenericViewSet):
         if self.action in ["list", "retrieve"]:
             return ForumListSerializer
         return ForumSerializer
+    
+    def create(self, request, *args, **kwargs):
+        serializer =self.get_serializer(data=request.data,context={'request':request})
+        serializer.is_valid(raise_exception=True)
+        forum = serializer.save()
+
+        return Response(ForumListSerializer(forum,context={'request':request}).data, status=status.HTTP_201_CREATED)
 
     queryset = Forum.objects.all()
 
@@ -47,3 +55,9 @@ class ForumCommentViewSet(ModelViewSet, GenericViewSet):
             return ForumCommentListSerializer
 
         return ForumCommentSerializer
+    def create(self, request, *args, **kwargs):
+        serializer =self.get_serializer(data=request.data,context={'request':request})
+        serializer.is_valid(raise_exception=True)
+        forum_comment = serializer.save()
+
+        return Response(ForumCommentListSerializer(forum_comment,context={'request':request}).data, status=status.HTTP_201_CREATED)
