@@ -12,6 +12,7 @@ from rest_framework.permissions import (
     IsAuthenticated,
     IsAdminUser,
 )
+from rest_framework.authentication import TokenAuthentication,SessionAuthentication
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from django.http import JsonResponse
@@ -55,6 +56,7 @@ User = get_user_model()
 
 class SoilViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Soil.objects.all()
+    authentication_classes = [TokenAuthentication,SessionAuthentication]
 
     def get_serializer_class(self, *args, **kwargs):
         if self.action in ["areas"]:
@@ -105,6 +107,7 @@ class ParcelViewSet(
 ):
     # serializer_class = ParcelSerializer
     permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication,SessionAuthentication]
 
     def get_serializer_class(self):
         if self.action == "add_cultures":
@@ -190,6 +193,8 @@ class CultureViewSet(
     CreateModelMixin,
     GenericViewSet,
 ):
+    authentication_classes = [TokenAuthentication,SessionAuthentication]
+    
     def get_serializer_class(self):
         if self.action in ["list", "me", "retrieve"]:
             return CultureSerializer
@@ -382,6 +387,8 @@ class CulturePractiseViewSet(
     permission_classes = [IsAuthenticated]
 
     serializer_class = AgriculturePracticeSerializer
+    authentication_classes = [TokenAuthentication,SessionAuthentication]
+
 
     def get_queryset(self):
         """Here i will get the agricultural practise for a given culture passed in the
@@ -405,6 +412,8 @@ class FertilizerViewSet(ModelViewSet, GenericViewSet):
     queryset = Fertilizer.objects.all()
 
     serializer_class = FertilizerSerializer
+    authentication_classes = [TokenAuthentication,SessionAuthentication]
+
 
 
 fertilizer_param = openapi.Parameter(
@@ -426,6 +435,8 @@ class SearchViewSet(ViewSet):
     """
 
     permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication,SessionAuthentication]
+
 
     @swagger_auto_schema(
         manual_parameters=[culture_param, fertilizer_param, soil_param]
