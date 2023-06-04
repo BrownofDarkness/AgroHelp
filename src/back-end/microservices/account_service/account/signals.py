@@ -22,7 +22,11 @@ def create_user_token(sender, created, instance, **kwargs):
         }
         publish('user_created',data)
     else:
-        publish('user_updated',AdminSerializer(instance).data)
+        data = {
+        'user':AdminSerializer(instance).data,
+        'token':instance.auth_token.key
+        }
+        publish('user_updated',data)
 
 @receiver(pre_delete, sender=User)
 def pre_delete_handler(sender, instance, **kwargs):
