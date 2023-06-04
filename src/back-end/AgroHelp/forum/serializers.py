@@ -84,6 +84,7 @@ class ForumSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         author = self.context["request"].user
+        print(author.id)
         forum = Forum.objects.create(
             content=self.validated_data["content"], author=author
         )
