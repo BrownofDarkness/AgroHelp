@@ -88,7 +88,7 @@ class ForumListSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_comments(self, obj: Forum):
-        messages_instance = ForumComment.objects.filter(forum=obj)
+        messages_instance = ForumComment.objects.filter(forum=obj,parent=None)
         message_serializer = ForumCommentListSerializer(
             messages_instance, many=True, context={"request": self.context["request"]}
         )
