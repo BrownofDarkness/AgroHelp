@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     # Third party apps
     "drf_yasg",
     "rest_framework",
+    "rest_framework.authtoken",
     "corsheaders",
     # Local apps
     "forum",
@@ -57,6 +59,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "forum_service.urls"
+
+AUTH_USER_MODEL='forum.User'
 
 
 TEMPLATES = [

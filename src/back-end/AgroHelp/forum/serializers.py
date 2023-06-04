@@ -70,7 +70,10 @@ class ForumSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Forum
-        fields = "__all__"
+        # fields = "__all__"
+        exclude = [
+            "author",
+        ]
 
     def get_comments(self, obj: Forum):
         messages_instance = ForumComment.objects.filter(forum=obj)
@@ -78,6 +81,13 @@ class ForumSerializer(serializers.ModelSerializer):
             messages_instance, many=True, context={"request": self.context["request"]}
         )
         return message_serializer.data
+
+    def save(self, **kwargs):
+        author = self.context["request"].user
+        forum = Forum.objects.create(
+            content=self.validated_data["content"], author=author
+        )
+        return forum
 
 
 class ForumListSerializer(serializers.ModelSerializer):

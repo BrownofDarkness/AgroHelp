@@ -1,8 +1,11 @@
 import json, pika
-import asyncio
+import os
+import django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "forum_service.settings")
+django.setup(set_prefix=True)
 import traceback
-
 from django.contrib.auth import get_user_model
+from rest_framework.authtoken.models import Token
 
 User = get_user_model()
 
@@ -22,14 +25,43 @@ def comsume_messages():
         content_type = properties.content_type
         message: dict = json.loads(body.decode())
 
+        print("Message Recieved ",message)
+
         msg_type: str = message.get("type", None)
         data: dict = message.get("data", None)
 
-        if msg_type == "user_created":
-            User.objects.create(**data)
+        def create_user(data,ch):
+            user_data = data.get("user", None)
+            user = User.objects.create(**user_data)
+            user_token = data.get("token", None)
+            if user_token:
+                Token.objects.create(user=user, key=user_token)
             ch.basic_ack(delivery_tag=method.delivery_tag)
             print("User created!")
 
+        def update_user(data,ch):
+            user_data:dict = data.get("user", None)
+            id = user_data.pop('id',None)
+            if id:
+                User.objects.filter(id=id).update(**user_data)
+                ch.basic_ack(delivery_tag=method.delivery_tag)
+                print("User Updated!")
+
+        if msg_type == "user_created":
+            try:
+
+                create_user(data,ch)
+            except:
+                ch.basic_ack(delivery_tag=method.delivery_tag)
+        if msg_type == 'user_updated':
+            id = data.get("id", None)
+            user = data.get('user',None)
+            id = user.get('id',None)
+            
+            if User.objects.filter(id=id).exists():
+                update_user(data,ch)
+            else:
+                create_user(data,ch)
         if msg_type == "user_deleted":
             if data.get("id", None):
                 User.objects.filter(id=data.get("id")).delete()
@@ -43,7 +75,8 @@ def comsume_messages():
     channel.start_consuming()
 
 
-try:
-    comsume_messages()
-except Exception as e:
-    traceback.print_exc()
+if __name__ =='__main__':
+    try:
+        comsume_messages()
+    except Exception as e:
+        traceback.print_exc()

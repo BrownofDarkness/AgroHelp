@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 
 from .producer import publish
 
-from .api.serializers import UserSerializer
+from .api.serializers import AdminSerializer
 
 User = get_user_model()
 
@@ -17,12 +17,16 @@ def create_user_token(sender, created, instance, **kwargs):
     if created:
         Token.objects.create(user=instance)
         data = {
-        'user':UserSerializer(instance).data,
+        'user':AdminSerializer(instance).data,
         'token':instance.auth_token.key
         }
         publish('user_created',data)
     else:
-        publish('user_updated',UserSerializer(instance).data)
+        data = {
+        'user':AdminSerializer(instance).data,
+        'token':instance.auth_token.key
+        }
+        publish('user_updated',data)
 
 @receiver(pre_delete, sender=User)
 def pre_delete_handler(sender, instance, **kwargs):
@@ -30,7 +34,7 @@ def pre_delete_handler(sender, instance, **kwargs):
     # Access the instance being deleted using the `instance` parameter
     print("Object is being deleted:", instance)
     # ...
-    publish('user_deleted',UserSerializer(instance).data)
+    publish('user_deleted',AdminSerializer(instance).data)
 
 
 
