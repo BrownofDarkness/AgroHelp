@@ -96,6 +96,7 @@ class CultureDiseaseAdvice(models.Model):
     )
     image = models.ImageField(upload_to="disease", blank=True, null=True)
     disease_name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
     solution = models.TextField()
 
     def __str__(self) -> str:
