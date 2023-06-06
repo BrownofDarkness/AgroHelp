@@ -9,7 +9,8 @@ import {
   getPractiseCulture,
   getFertilizer,
 } from "../controllers/culture.controller";
-import { createCultureSchema } from "../schema/createCultureSchema";
+
+import {} from "express-oas-validator";
 
 import { storage } from "../config";
 import multer from "multer";
@@ -18,20 +19,14 @@ import { getCultureSchema, validate } from "../schema";
 const upload = multer({ storage });
 
 const router = Router();
-/**
- * @typedef {object} FileData
- * @property {string} fieldname - Name of the field that the file was uploaded as
- * @property {string} originalname - Name of the file on the user's computer
- * @property {string} mimetype - MIME type of the file
- * @property {Buffer} buffer - Buffer containing the contents of the file
- */
 
 /**
  * CultureCreate
  * @typedef {object} CultureCreate
- * @property {string} culture_name.required - The culture name
+ * @property {string} name.required - The culture name
  * @property {string} category.required - The culture category
  * @property {string} description - The culture description
+ * @property {string} image - The culture image - binary
  */
 
 /**
@@ -60,17 +55,13 @@ router.get("/", listCulture);
  * @summary Create a culture
  * @tags Culture
  * @consumes multipart/form-data
- * @param {string} culture_name.formData.required - The Culture name
- * @param {file} image.formData.file - The culture file
- * @param {string} category.formData.required - The Culture category
- * @param {string} description.formData - The culture description
+ * @param {CultureCreate} request.body.required - Culture Info - multipart/form-data
  * @return {Culture} 201 - success
  * @return {object} 400 -  Bad Request
  */
 router.post(
   // * @param {CultureCreate} request.formData.required - The request body as multipart/form-data
   "/",
-  validate(createCultureSchema),
   upload.single("image"),
   createCulture
 );
@@ -91,8 +82,8 @@ router.get("/:id/", validate(getCultureSchema), getCulture);
  * @tags Culture
  * @param {number} id.path.required A unique integer value identifying this  Culture
  * @consumes multipart/form-data
- * @param {CultureCreate} request.formData.required - The request body as multipart/form-data
- * @return {Culture} 200 - success response application/json
+ * @param {CreateCulture} request.body.required - Culture Info - multipart/form-data
+ * @return {Culture} 200 - success response -  application/json
  * @returns {object} 404 - Not Found
  */
 router.patch(
@@ -106,8 +97,8 @@ router.patch(
  * @summary Update a culture
  * @tags Culture
  * @param {number} id.path.required A unique integer value identifying this  Culture
- * @param {CultureCreate} request.formData.required - The request body as multipart/form-data
- * @return {Culture} 200 - success response application/json
+ * @param {CreateCulture} request.body.required - Culture Info - multipart/form-data
+ * @return {Culture} 200 - success response - application/json
  * @returns {object} 404 - Not Found
  */
 router.put(
@@ -130,7 +121,7 @@ router.delete("/:id/", validate(getCultureSchema), deleteCulture);
  * GET /api/culture/{id}/practises/
  * @tags Culture
  * @param {number} id.path.required A unique integer value identifying this  Culture
- * @return {CulturePractise} 200 - success response application/json
+ * @return {CulturePractise} 200 - success response - application/json
  * @returns {object} 404 - Not Found
  * @summary Get all a culture practise
  */
@@ -140,7 +131,7 @@ router.get("/:id/practises/", validate(getCultureSchema), getPractiseCulture);
  * GET /api/culture/{id}/diseases/
  * @tags Culture
  * @param {int} id.path.required A unique integer value identifying this  Culture
- * @return {CultureDisease} 200 - success response application/json
+ * @return {CultureDisease} 200 - success response - application/json
  * @returns {object} 404 - Not Found
  * @summary Get all a culture disease advice
  */
@@ -160,7 +151,7 @@ router.get("/:id/diseases/", validate(getCultureSchema), getDiseaseCulture);
  * GET /api/culture/{id}/fertilizers/
  * @tags Culture
  * @param {int} id.path.required A unique integer value identifying this  Culture
- * @return {CultureWithFertilizer} 200 - success response application/json
+ * @return {CultureWithFertilizer} 200 - success response - application/json
  * @returns {object} 404 - Not Found
  * @summary Get all a culture fertilizers
  */

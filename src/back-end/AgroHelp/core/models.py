@@ -102,7 +102,8 @@ class CultureDiseaseAdvice(models.Model):
         return f"{self.culture} {self.disease_name}"
 
     def image_preview(self):
-        return format_html(f"<img src='{self.image.url}' width='400' heigth='400'/>")
+        if self.image:
+            return format_html(f"<img src='{self.image.url}' width='400' heigth='400'/>")
 
 
 class Fertilizer(models.Model):

@@ -7,6 +7,17 @@ import {
   deleteCultureDisease,
 } from "../controllers/culture-disease.controller";
 
+import { storage } from "../config";
+import multer from "multer";
+import { getCulturePractiseSchema } from "../schema/getCulturePractiseSchema";
+import {
+  validate,
+  createCultureDiseaseAdviceSchema,
+  updateCultureDiseaseAdviceSchema,
+} from "../schema";
+
+const upload = multer({ storage });
+
 const router = Router();
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -26,6 +37,7 @@ router.use(express.urlencoded({ extended: true }));
  * @property {string} culture_id - Culture id
  * @property {string} disease_name - Culture Disease name
  * @property {string} solution - Culture Disease solution
+ * @property {string} image - disease image - binary
  *
  */
 
@@ -42,11 +54,16 @@ router.get("/", listCultureDisease);
 /**
  * POST /api/culture-disease/
  * @summary Create a culture diseases
- * @param {CultureDiseaseCreate} request.body.required
+ * @consumes multipart/form-data
+ * @param {CultureDiseaseCreate} request.body.required - Culture Disease info - multipart/form-data
  * @returns {CultureDisease} 200 - Success
  * @tags Culture Disease
  */
-router.post("/", createCultureDisease);
+router.post(
+  "/",
+  upload.single("image"),
+  createCultureDisease
+);
 
 /**
  * GET /api/culture-disease/{id}/
@@ -56,29 +73,39 @@ router.post("/", createCultureDisease);
  * @tags Culture Disease
  *
  */
-router.get("/:id/", getCultureDisease);
+router.get("/:id/", validate(getCulturePractiseSchema), getCultureDisease);
 
 /**
  * PUT /api/culture-disease/{id}/
  * @summary Update a culture disease
+ * @consumes multipart/form-data
  * @param {int} id.path.required A unique integer value identifying this  culture disease
- * @param {CultureDisease} request.body.required
+ * @param {CultureDiseaseCreate} request.body.required - Culture Disease info - multipart/form-data
  * @returns {CultureDisease} 200 - Success
  * @returns {object} 404 - Bad Request
  * @tags Culture Disease
  */
-router.put("/:id/", updateCultureDisease);
+router.put(
+  "/:id/",
+  upload.single("image"),
+  updateCultureDisease
+);
 
 /**
  * PATCH /api/culture-disease/{id}/
  * @summary Update a culture disease
  * @param {int} id.path.required A unique integer value identifying this  culture disease
- * @param {CultureDisease} request.body.required
+ * @consumes multipart/form-data
+ * @param {CultureDiseaseCreate} request.body.required - Culture Disease info - multipart/form-data
  * @returns {CultureDisease} 200 - Success
  * @returns {object} 404 - Bad Request
  * @tags Culture Disease
  */
-router.patch("/:id/", updateCultureDisease);
+router.patch(
+  "/:id/",
+  upload.single("image"),
+  updateCultureDisease
+);
 
 /**
  * DELETE /api/culture-disease/

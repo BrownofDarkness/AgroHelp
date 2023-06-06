@@ -1,4 +1,5 @@
 import path from "path";
+import fs from "fs";
 import { Request } from "express";
 const PARENT_PATH = path.dirname(__dirname);
 
@@ -8,12 +9,19 @@ import multer from "multer";
 
 var storage = multer.diskStorage({
   destination: function (req: Request, file, cb) {
+    if (!fs.existsSync(MEDIA_ROOT)) {
+      fs.mkdirSync(MEDIA_ROOT);
+    }
     cb(null, MEDIA_ROOT);
   },
   filename: function (req: Request, file, cb) {
+    const filename: string = file.originalname;
     cb(
       null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+      filename.replace(/\s+/g, "") +
+        "-" +
+        Date.now() +
+        path.extname(file.originalname)
     );
   },
 });

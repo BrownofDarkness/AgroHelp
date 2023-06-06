@@ -1,7 +1,9 @@
-import { Culture } from "../models";
+import { CultureDiseaseAdvice } from "../models";
 
-function serializeCulture(culture: void | Culture | Culture[]): any {
-  const serializeSingleCulture = (c: Culture) => {
+function serializeCultureDisease(
+  culture: void | CultureDiseaseAdvice | CultureDiseaseAdvice[]
+): any {
+  const serializeSingleCulture = (c: CultureDiseaseAdvice) => {
     return {
       ...c.toJSON(),
       image: c.imageUrl,
@@ -18,4 +20,4 @@ function serializeCulture(culture: void | Culture | Culture[]): any {
   return serializeSingleCulture(culture);
 }
 
-export default serializeCulture;
+export default serializeCultureDisease;

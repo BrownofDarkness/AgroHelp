@@ -48,4 +48,4 @@ RUN python manage.py admin_default_user
 
 EXPOSE 8004
 # Start the app
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8004"]

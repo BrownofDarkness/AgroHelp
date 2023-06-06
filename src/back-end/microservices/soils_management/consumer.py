@@ -16,14 +16,11 @@ parameters = pika.ConnectionParameters(settings.RABBITMQ_HOST, 5672, "/", creden
 # parameters = pika.URLParameters(
 #     "amqps://krimticf:rb_pr0-RABLjrHtEvKYUCa7lfQtMi8hG@jaragua.lmq.cloudamqp.com/krimticf"
 # )
-
 connection = pika.BlockingConnection(parameters)
 
 channel = connection.channel()
 
-channel.queue_declare(queue="soil")
-
-
+channel.queue_declare(queue="soil",durable=True)
 def callback(ch, method, properties, body):
     print("Recieve in culture")
 
@@ -34,7 +31,14 @@ def callback(ch, method, properties, body):
     msg_type: str = message.get("type", None)
     data: dict = message.get("data", None)
 
+    data.pop('created_at',None)
+    data.pop('updated_at',None)
+
+
     if msg_type == "culture_created":
+        _culture = Culture.objects.filter(id=data.get('id'))
+        if _culture.exists():
+            _culture.delete()
         Culture.objects.create(**data)
         print("Culture Created!")
         ch.basic_ack(delivery_tag=method.delivery_tag)
@@ -48,7 +52,7 @@ def callback(ch, method, properties, body):
             print(f"Culture with id={id} deleted!")
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
-channel.basic_consume(queue="soil", on_message_callback=callback, auto_ack=True)
+channel.basic_consume(queue="soil", on_message_callback=callback, auto_ack=False)
 
 
 print("Start Consuming")
