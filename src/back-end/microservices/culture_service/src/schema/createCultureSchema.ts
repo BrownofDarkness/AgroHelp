@@ -2,8 +2,7 @@ import { checkSchema } from "express-validator";
 import { Culture } from "../models";
 
 export const createCultureSchema = checkSchema({
-  culture_name: {
-    isString: true,
+  name: {
     errorMessage: "culture name require!",
     custom: {
       options: async (value: string) => {

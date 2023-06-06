@@ -12,6 +12,8 @@ import {
   getServerProtocole,
 } from "../config";
 import fs from "fs";
+import { IP6to4 } from "../utils/ipv6to4";
+import { isIPv4, isIPv6 } from "net";
 
 interface CultureAttributes {
   id?: number;
@@ -37,7 +39,11 @@ class Culture
 
   public get imageUrl(): string {
     const mediaFolder = "media";
-    const address = getServerAddress();
+    let address = getServerAddress();
+    console.log(isIPv6(address));
+    if (isIPv6(address)) {
+      address = `[${address}]`;
+    }
     const port = getServerPort();
     const protocole = getServerProtocole();
     const url = `${protocole}://${address}:${port}/${mediaFolder}`;

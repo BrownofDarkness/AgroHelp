@@ -19,11 +19,15 @@ UserIn_Pydantic = pydantic_model_creator(models.User, exclude_readonly=True)
 Token_Pydantic = pydantic_model_creator(models.Token)
 TokenIn_Pydantic = pydantic_model_creator(models.Token, exclude_readonly=True)
 Parcel_Pydantic = pydantic_model_creator(models.Parcel, name="ParcelList")
-ParcelIn_Pydantic = pydantic_model_creator(models.Parcel, exclude_readonly=True,name="ParcelCreate")
+ParcelIn_Pydantic = pydantic_model_creator(
+    models.Parcel, exclude_readonly=True, name="ParcelCreate"
+)
 Culture_Pydantic = pydantic_model_creator(models.Culture)
 CultureIn_Pydantic = pydantic_model_creator(models.Culture, exclude_readonly=True)
 CultureParcel_Pydantic = pydantic_model_creator(models.CultureParcel, exclude=["id"])
-CultureParcelIn_Pydantic = pydantic_model_creator(models.CultureParcel, exclude_readonly=True)
+CultureParcelIn_Pydantic = pydantic_model_creator(
+    models.CultureParcel, exclude_readonly=True
+)
 
 
 from pydantic import BaseModel
@@ -63,7 +67,8 @@ class ParcelCreate(BaseModel):
     name: str
     area: float
     user_id: int
-
+    longitude: float
+    latitude: float
 
 
 class CultureCreate(BaseModel):
@@ -87,14 +92,10 @@ class Culture(BaseModel):
 class CultureParcelCreate(BaseModel):
     culture_id: int
     parcel_id: int
-    longitude: float
-    latitude: float
-
-
 
 
 class CultureIds(BaseModel):
-    ids:list[int]
+    ids: list[int]
 
 
 class Parcel(BaseModel):
@@ -102,22 +103,19 @@ class Parcel(BaseModel):
     name: str
     area: float
     user: User
+    longitude: float
+    latitude: float
 
     cultures: list[Culture] = []
 
     class Config:
         orm_mode = True
 
-        
-
-    
 
 class CultureParcel(BaseModel):
     id: int
     culture: Culture
     parcel: Parcel
-    longitude: float
-    latitude: float
 
     class Config:
         orm_mode = True

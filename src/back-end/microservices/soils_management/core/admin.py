@@ -39,4 +39,16 @@ class SoilAreaAdmin(LeafletGeoAdmin):
 @admin.register(Culture)
 class CultureAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "image_preview"]
-    readonly_fields = ["name", "id", "image"]
+    # readonly_fields = ["name", "id", "image"]
+    
+    
+    readonly_fields = [field.name for field in Culture._meta.fields]
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

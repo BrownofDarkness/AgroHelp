@@ -21,6 +21,7 @@ import { IP6to4 } from "./utils/ipv6to4";
       (async () => {})();
 
       console.log("db ready".bold);
+      connectQueue();
     })
     .catch((err) => {
       log(err);
@@ -48,8 +49,6 @@ app.use("/api", routes);
 
 SetupDocs(app);
 
-connectQueue();
-
 const server = httpServer.listen(PORT, () => {
   console.log(`Server running at http://127.0.0.1:${PORT}`);
 });
@@ -58,7 +57,5 @@ const stringData = JSON.stringify(server.address());
 const jsonData: AddressInfo = JSON.parse(stringData);
 
 setServerConfig(IP6to4(jsonData.address), jsonData.port);
-
-console.log(`App running at ${IP6to4(jsonData.address)}:${jsonData.port}`);
 
 export default server;

@@ -46,15 +46,30 @@ export const getCulture = async (req: Request, res: Response) => {
  * @param res
  */
 export const createCulture = async (req: Request, res: Response) => {
-  const { culture_name, description, category } = req.body;
+  const { name, description, category } = req.body;
+  if (!name) {
+    return res
+      .status(400)
+      .send({ errors: `Culture with name required!`, success: false });
+  } else {
+    const presentCulture = await Culture.findOne({
+      where: { name: name },
+    });
+    if (presentCulture) {
+      return res
+        .status(400)
+        .send({ errors: `Culture with name ${name} already exists!` });
+    }
+  }
+
   const image = req.file?.filename || "";
   const culture = await CultureService.create({
-    name: culture_name.toLowerCase(),
+    name: name.toLowerCase(),
     image,
     category,
     description,
   });
-  res.status(status.HTTP_CREATED).send(culture);
+  res.status(status.HTTP_CREATED).send(serializeCulture(culture));
 };
 
 /**
@@ -64,26 +79,31 @@ export const createCulture = async (req: Request, res: Response) => {
  */
 export const updateCulture = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name } = req.body;
+  const { name, category, description } = req.body;
   const image = req.file?.filename || "";
   const cultureToUpdate = await CultureService.findById(id);
   if (cultureToUpdate) {
     if (name) {
-      const filePath = `${MEDIA_ROOT}/${cultureToUpdate.image}`;
-
       cultureToUpdate.name = name;
+    }
+    if (category) {
+      cultureToUpdate.category = category;
+    }
+    if (description) {
+      cultureToUpdate.description = description;
+    }
+    if (image) {
+      const filePath = `${MEDIA_ROOT}/${cultureToUpdate.image}`;
       // Check if the file exists
       if (fs.existsSync(filePath)) {
         // Delete the file
         fs.unlinkSync(filePath);
       }
-    }
-    if (image) {
       cultureToUpdate.image = image;
     }
 
     const culture = await cultureToUpdate.save();
-    res.status(status.HTTP_OK).send(culture);
+    res.status(status.HTTP_OK).send(serializeCulture(culture));
   } else {
     res.status(status.HTTP_NOT_FOUND).send({ message: "Culture not found" });
   }

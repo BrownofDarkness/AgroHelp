@@ -37,7 +37,7 @@ class Culture(models.Model):
 
 
 class SoilCulture(models.Model):
-    id = models.BigIntegerField(primary_key=True)
+    # id = models.BigIntegerField(primary_key=True,auto_created=True)
     soil = models.ForeignKey(
         Soil, on_delete=models.CASCADE, related_name='soil_culture')
     culture = models.ForeignKey(

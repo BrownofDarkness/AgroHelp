@@ -34,7 +34,7 @@ class Parcel(models.Model):
     )
     longitude = fields.FloatField(null=False)
     latitude = fields.FloatField(null=False)
-    cultures: fields.ReverseRelation["CultureParcel"]
+    # cultures: fields.ReverseRelation["CultureParcel"]
 
     class Meta:
         table = "parcels"

@@ -14,10 +14,12 @@ export const listCultureDisease = async (req: Request, res: Response) => {
 
 export const createCultureDisease = async (req: Request, res: Response) => {
   const { culture_id, disease_name, solution } = req.body;
+  const image = req.file?.filename;
   const createdCulture = await CultureDiseaseService.create({
     culture_id,
     disease_name,
     solution,
+    image,
   });
   return res.status(status.HTTP_CREATED).send(createdCulture);
 };
@@ -32,6 +34,7 @@ export const getCultureDisease = async (req: Request, res: Response) => {
 };
 export const updateCultureDisease = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const image = req.file?.filename;
   const { disease_name, solution } = req.body;
 
   const cultureDiseaseToUpdate = await CultureDiseaseService.findById(id);
@@ -41,6 +44,12 @@ export const updateCultureDisease = async (req: Request, res: Response) => {
     }
     if (solution) {
       cultureDiseaseToUpdate.solution = solution;
+    }
+
+
+    
+    if (image) {
+      cultureDiseaseToUpdate.image = image;
     }
     res.status(status.HTTP_OK).send(await cultureDiseaseToUpdate.save());
   } else {
