@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 
 from .models import Forum, ForumComment
 
-from .serializers import ForumCommentSerializer, ForumSerializer
+from .serializers import ForumCommentSerializer, ForumSerializer, ForumListSerializer,ForumCommentListSerializer
 
 
 @receiver(post_save, sender=Forum)
@@ -14,7 +14,7 @@ def notify_all_farmers_on_new_forum(sender, instance, created, **kwargs):
         import asyncio
         import json
 
-        forum_data = ForumSerializer(
+        forum_data = ForumListSerializer(
             instance, context={"request": None}).data
 
         message: dict = {"msg_type": "forum_created", "data": forum_data}
@@ -38,7 +38,7 @@ def notify_a_forum_on_new_comment(sender, instance, created, **kwargs):
     import asyncio
     import json
 
-    forum_comment = ForumCommentSerializer(
+    forum_comment = ForumCommentListSerializer(
         instance, context={"request": None}).data
     if created:
         message: dict = {

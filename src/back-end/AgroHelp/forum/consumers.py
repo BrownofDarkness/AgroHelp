@@ -3,7 +3,7 @@ import json
 from asgiref.sync import sync_to_async
 from .models import Forum, ForumComment
 
-from .serializers import ForumCommentSerializer
+from .serializers import ForumCommentSerializer, ForumCommentListSerializer
 
 
 class PublicForumConsumer(AsyncWebsocketConsumer):
@@ -82,8 +82,9 @@ class ForumConsumer(AsyncWebsocketConsumer):
     def save_forum_comment(self, forum: int, content: str, parent: int | None = None):
         user = self.scope["user"]
         forum = Forum.objects.get(id=int(self.room_name_id))
+        comment = ForumComment.objects.get(id = int(parent))
         forum_comment = ForumComment.objects.create(
-            forum=forum, author=user, parent=parent, content=content
+            forum=forum, author=user, parent=comment, content=content
         )
 
-        return ForumCommentSerializer(forum_comment).data
+        return ForumCommentListSerializer(forum_comment, context={"request": None}).data
