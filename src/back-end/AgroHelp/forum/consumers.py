@@ -1,6 +1,5 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
 from .models import Forum, ForumComment
 
@@ -34,6 +33,10 @@ class PublicForumConsumer(AsyncWebsocketConsumer):
             self.room_name, {"type": "send_message", "message": message}
         )
 
+    async def send_message(self, event):
+        message = event["message"]
+        await self.send(text_data=json.dumps({"message": message}))
+
 
 class ForumConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -57,22 +60,14 @@ class ForumConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message: dict = text_data_json["message"]
 
-        msg_type: str = message.get("msg_type")
         data: dict = message.get("data")
-
-        print(text_data_json)
 
         # create a forum post comment
         content: str = data.get("content", None)
         forum: int = data.get("forum", None)
         parent: int = data.get("parent", None)
-        msg_data = self.save_forum_comment(forum=forum, content=content, parent=parent)
-
-        # if parent:
-        #   message = {
-        #       'msg_type':'forum_commented',
-        #       'data':msg_data
-        #   }
+        msg_data = await self.save_forum_comment(
+            forum=forum, content=content, parent=parent)
 
         await self.channel_layer.group_send(
             self.room_name, {"type": "send_message", "message": msg_data}
@@ -81,7 +76,7 @@ class ForumConsumer(AsyncWebsocketConsumer):
     async def send_message(self, event):
         message = event["message"]
         data = {"msg_type": "comment_created", "data": message}
-        self.send(text_data=json.dumps({"message": data}))
+        await self.send(text_data=json.dumps({"message": data}))
 
     @sync_to_async
     def save_forum_comment(self, forum: int, content: str, parent: int | None = None):
