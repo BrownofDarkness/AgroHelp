@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -150,6 +149,182 @@ const styles = StyleSheet.create({
 });
 
 export default ChatScreen;
+
+
+
+
+
+
+// import React, { useState, useEffect } from 'react';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   TouchableOpacity,
+//   ScrollView,
+//   StyleSheet,
+//   Dimensions,
+// } from 'react-native';
+
+// import { useNavigation } from '@react-navigation/native';
+// import MainHeader from '../components/shared/MainHeader';
+
+
+// // import CultureController from '../../data/controllers/culture_controller';
+
+// const ChatScreen = () => {
+//   const [question, setQuestion] = useState('');
+//   const [textControllers, setTextControllers] = useState([]);
+
+//   const navigation = useNavigation();
+
+//   useEffect(() => {
+//     return () => {
+//       for (const controller of textControllers) {
+//         controller.dispose();
+//       }
+//     };
+//   }, []);
+
+//   const tronk = (text, textHeight) => {
+//     if (text.length > textHeight) {
+//       return text.substring(0, textHeight) + '.....';
+//     } else {
+//       return text;
+//     }
+//   };
+
+//   const handleSubmit = () => {
+//     console.log('lancer la rechrche');
+//   };
+
+//   const handleForumDetails = (index) => {
+//     console.log('go on forum details', index);
+//     navigation.navigate(RouteHelper.getForumDetails());
+//   };
+
+//   const renderForumItems = () => {
+//     for (let i = 0; i < 30; i++) {
+//       textControllers.push(useState(''));
+//     }
+
+//     return textControllers.map((textController, index) => (
+//       <TouchableOpacity
+//         key={index}
+//         onPress={() => handleForumDetails(index)}
+//         style={styles.container}
+//       >
+//         <View style={styles.questionContainer}>
+//           <Text style={styles.questionText}>the question's author</Text>
+//         </View>
+//         <View style={styles.descriptionContainer}>
+//           <Text style={styles.descriptionText}>
+//             {tronk(
+//               'kfhdfjvghjgfhjvgdhfvgdhjhfdjvfdgvhfvhfdHgsHsxgqxgsqhdhqdgshdfshdhjdghsdfsghdshgdfgsdfghdsgqsqvdhqvdhsdfshdsugzeuzgezgyzqxcqgfxcsqgfxcsxgfcgfcsfxgcsfgxcsgfxcqfgxscgfcsgfx',
+//               Dimensions.get('window').height * 0.55
+//             )}
+//           </Text>
+//         </View>
+//         <View style={styles.commentContainer}>
+//           <TextInput
+//             value={textController[0]}
+//             onChangeText={(text) => textController[1](text)}
+//             multiline={true}
+//             style={styles.commentInput}
+//             placeholder="make a comment"
+//           />
+//           <TouchableOpacity
+//             onPress={() => {
+//               console.log(textController[0]);
+//               textController[1]('');
+//             }}
+//           >
+//             <Text>Send</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </TouchableOpacity>
+//     ));
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <MainHeader title="Forum" /> 
+//       <View style={styles.inputContainer}>
+//         <TextInput
+//           value={question}
+//           onChangeText={setQuestion}
+//           style={styles.questionInput}
+//           placeholder="Ask a Question"
+//         />
+//         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+//           <Text style={styles.submitButtonText}>Submit</Text>
+//         </TouchableOpacity>
+//       </View>
+//       <ScrollView>{renderForumItems()}</ScrollView>
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 20,
+//     backgroundColor: '#fff',
+//   },
+//   inputContainer: {
+//     flexDirection: 'row',
+//     marginBottom: 20,
+//     // marginTop: 20,
+//   },
+//   questionInput: {
+//     flex: 1,
+//     height: 40,
+//     borderWidth: 1,
+//     borderColor: '#ccc',
+//     borderRadius: 4,
+//     paddingHorizontal: 10,
+//   },
+//   submitButton: {
+//     marginLeft: 10,
+//     backgroundColor: 'green',
+//     paddingHorizontal: 15,
+//     paddingVertical: 10,
+//     borderRadius: 4,
+//   },
+//   submitButtonText: {
+//     color: '#fff',
+//     fontWeight: 'bold',
+//   },
+//   questionContainer: {
+//     marginBottom: 10,
+//   },
+//   questionText: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//   },
+//   descriptionContainer: {
+//     marginBottom: 10,
+//   },
+//   descriptionText: {
+//     fontSize: 16,
+//   },
+//   commentContainer: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+//   commentInput: {
+//     flex: 1,
+//     height: 40,
+//     borderWidth: 1,
+//     borderColor: '#ccc',
+//     borderRadius: 4,
+//     paddingHorizontal: 10,
+//     marginRight: 10,
+//   },
+// });
+
+// export default ChatScreen;
+
 
 // import React from 'react';
 // import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';

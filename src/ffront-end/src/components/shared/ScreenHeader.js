@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: spacing.l,
     paddingVertical: spacing.l,
+    backgroundColor: '#FFFFF0', //#FFFFF0
   },
   mainTitle: {
     fontSize: sizes.title,

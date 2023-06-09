@@ -1,50 +1,54 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  useWindowDimensions,
-} from "react-native";
+import { View, Text, Image, StyleSheet, useWindowDimensions, TouchableOpacity } from "react-native";
 import Logo from "../../../assets/Logo1.png";
 import { CustomInput, CustomButton, CustomButtonReg } from "../../components/";
 import ApiService from "../../utils/ApiService";
+import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../context/AuthContext";
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const {setToken,setUser} = useAuth()
+
   const { height } = useWindowDimensions();
 
   const onSignInPressed = () => {
     if (!username || !password) {
-      return setError("Please fill all your informations");
+      return setError("Please fill in all your information");
     }
     ApiService.login(JSON.stringify({ email: username, password }))
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        alert("Login Successfull");
+        if(data.token){
+          setToken(data.token)
+          setUser(data.user)
+          // alert("Login Successful");
+          navigation.navigate("Parcels", { screen: "Parcels" });
+        }
       })
       .catch((err) => {
         setError(err.message);
       });
   };
 
-  const onForgotPasswordPressed = () => {
-    navigation.navigate("Home", { screen: "Parcel" });
+  const handleForgotPassword = () => {
+    navigation.navigate('ForgotPassword');
   };
+
   const onregisterPressed = () => {
     navigation.navigate("Register");
   };
 
-  const onNotificationPressed = () => {
-    navigation.navigate("Home", { screen: "Notifier" });
-  };
-
   return (
     <View style={styles.root}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Ionicons name="arrow-back" size={24} color="#000" />
+      </TouchableOpacity>
+
       <Image
         source={Logo}
         style={[styles.logo, { height: height * 0.5 }]}
@@ -53,12 +57,13 @@ const LoginScreen = ({ navigation }) => {
 
       <Text style={[styles.login]}> Login </Text>
 
-      <Text style={[styles.info]}> Enter your informations </Text>
+      <Text style={[styles.info]}> Enter your information </Text>
       {error && <Text>{error}</Text>}
       <CustomInput
         placeholder="Username"
         value={username}
         setValue={setUsername}
+        shadowColor="green"
       />
 
       <CustomInput
@@ -66,14 +71,16 @@ const LoginScreen = ({ navigation }) => {
         value={password}
         setValue={setPassword}
         secureTextEntry={true}
+        shadowColor="green"
       />
 
       <CustomButton text="Sign In" onPress={onSignInPressed} />
       <CustomButtonReg text="Register" onPress={onregisterPressed} />
       <CustomButton
         text="Forgot Password"
-        onPress={onForgotPasswordPressed}
+        onPress={handleForgotPassword}
         type="TERTIARY"
+        style={{ backgroundColor: "transparent" }}
       />
 
       {/* <CustomButton
@@ -90,6 +97,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     flex: 1,
+  },
+  backButton: {
+    position: "absolute",
+    top: 50,
+    left: 10,
+    zIndex: 1,
   },
   logo: {
     width: 300,
