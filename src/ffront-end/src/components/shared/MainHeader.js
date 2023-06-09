@@ -39,10 +39,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: spacing.l,
+    paddingVertical: 18,
+    backgroundColor: '#025592',
+    marginTop: 30,
   },
   title: {
     fontSize: sizes.h3,
     fontWeight: 'bold',
+    color: '#ffffff'
   },
 });
 

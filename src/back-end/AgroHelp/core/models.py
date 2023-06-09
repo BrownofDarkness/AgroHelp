@@ -94,7 +94,7 @@ class CultureDiseaseAdvice(models.Model):
     culture = models.ForeignKey(
         Culture, on_delete=models.CASCADE, related_name="culture_disease_advice"
     )
-    image = models.ImageField(upload_to="disease", blank=True, null=True)
+    image = models.ImageField(upload_to="disease/", blank=True, null=True)
     disease_name = models.CharField(max_length=255)
     solution = models.TextField()
 
@@ -102,7 +102,8 @@ class CultureDiseaseAdvice(models.Model):
         return f"{self.culture} {self.disease_name}"
 
     def image_preview(self):
-        return format_html(f"<img src='{self.image.url}' width='400' heigth='400'/>")
+        if self.image:
+            return format_html(f"<img src='{self.image.url}' width='400' heigth='400'/>")
 
 
 class Fertilizer(models.Model):
