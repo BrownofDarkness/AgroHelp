@@ -82,9 +82,15 @@ class ForumConsumer(AsyncWebsocketConsumer):
     def save_forum_comment(self, forum: int, content: str, parent: int | None = None):
         user = self.scope["user"]
         forum = Forum.objects.get(id=int(self.room_name_id))
-        comment = ForumComment.objects.get(id = int(parent))
-        forum_comment = ForumComment.objects.create(
-            forum=forum, author=user, parent=comment, content=content
-        )
+        if(parent == None):
+            forum_comment = ForumComment.objects.create(
+                forum=forum, author=user, parent=None, content=content
+            )
+        else:
+            comment = ForumComment.objects.get(id = int(parent))
+            forum_comment = ForumComment.objects.create(
+                forum=forum, author=user, parent=comment, content=content
+            ) 
+        
 
         return ForumCommentListSerializer(forum_comment, context={"request": None}).data

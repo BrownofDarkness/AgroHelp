@@ -113,6 +113,7 @@ class Fertilizer(models.Model):
     composition = models.TextField()
     type = models.CharField(max_length=25, choices=TYPE)
     description = models.TextField()
+    image = models.ImageField(upload_to="fertilizers", blank=True, null=True)
 
     def __str__(self) -> str:
         return self.name

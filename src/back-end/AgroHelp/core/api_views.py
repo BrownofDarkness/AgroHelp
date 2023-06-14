@@ -110,7 +110,7 @@ class ParcelViewSet(
     authentication_classes = [TokenAuthentication,SessionAuthentication]
 
     def get_serializer_class(self):
-        if self.action == "add_cultures":
+        if self.action in ["add_cultures","remove_cultures"]:
             return CulturesIdsSerializer
 
         return ParcelSerializer
@@ -151,11 +151,22 @@ class ParcelViewSet(
         soils = Soil.objects.filter(
             areas__polygon__intersects=instance.location)
         cultures = Culture.objects.filter(soil_culture__soil__in=soils)
+        sugg = _CultureSerializer(cultures, many=True, context={"request": request}).data
+        results = []
+        for culture in sugg:
+            """
+            Here i will check if a user practise this culture
+            """
+            favorite = Culture.objects.filter(
+                parcel__culture__id=culture["id"], parcel__parcel =instance.id
+            ).exists()
+            data = {"culture": culture, "favorite": favorite}
+
+            results.append(data)
+        print(sugg)
+        
         # return Response(SoilSerializer(soils, many=True).data)
-        return Response(
-            _CultureSerializer(cultures, many=True, context={
-                               "request": request}).data
-        )
+        return Response(results)
 
     @action(methods=["POST"], detail=True)
     def add_cultures(self, request, *args, **kwargs):
@@ -175,6 +186,25 @@ class ParcelViewSet(
             return Response(
                 {"message": f"Culture added successfully"},
                 status=status.HTTP_201_CREATED,
+            )
+        return Response({"detail": "Not Allow"}, status=status.HTTP_403_FORBIDDEN)
+    @action(methods=["POST"], detail=True)
+    def remove_cultures(self,request, *args,**kwargs):
+        instance: Parcel = self.get_object()
+        serializer = CulturesIdsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        cultures = serializer.validated_data["ids"]
+        if instance.user == request.user:
+            for culture in cultures:
+                try:
+                    cult = CultureParcel.objects.filter(culture = culture, parcel = instance)
+                    cult.delete()
+                except:
+                    pass
+            return Response(
+                {"message": "Culture deleted succesfully"},
+                status=status.HTTP_404_NOT_FOUND,
             )
         return Response({"detail": "Not Allow"}, status=status.HTTP_403_FORBIDDEN)
 
@@ -423,8 +453,8 @@ fertilizer_param = openapi.Parameter(
     type=openapi.TYPE_STRING,
 )
 
-soil_param = openapi.Parameter(
-    "soil", openapi.IN_QUERY, description="soil name", type=openapi.TYPE_STRING
+disease_param = openapi.Parameter(
+    "disease", openapi.IN_QUERY, description="disease name", type=openapi.TYPE_STRING
 )
 
 
@@ -439,12 +469,12 @@ class SearchViewSet(ViewSet):
 
 
     @swagger_auto_schema(
-        manual_parameters=[culture_param, fertilizer_param, soil_param]
+        manual_parameters=[culture_param, fertilizer_param, disease_param]
     )
     def list(self, request, *args, **kwargs):
         culture = request.query_params.get("culture", None)
 
-        soil = request.query_params.get("soil", None)
+        disease = request.query_params.get("disease", None)
 
         fertilizer = request.query_params.get("fertilizer", None)
 
@@ -453,19 +483,19 @@ class SearchViewSet(ViewSet):
 
             return Response(
                 {
-                    "results": CultureSerializer(
-                        cultures, many=True, context={"request", request}
+                    "results": _CultureSerializer(
+                        cultures, many=True
                     ).data,
                 }
             )
 
-        if soil:
-            soils = Soil.objects.filter(type__icontains=soil)
+        if disease:
+            diseases = CultureDiseaseAdvice.objects.filter(disease_name__icontains=disease)
 
             return Response(
                 {
-                    "results": SoilDetailSerializer(
-                        soils, many=True, context={"request", request}
+                    "results": CultureDiseaseSerializer(
+                        diseases, many=True
                     ).data
                 }
             )
@@ -475,12 +505,12 @@ class SearchViewSet(ViewSet):
             return Response(
                 {
                     "results": FertilizerSerializer(
-                        fertilizers, many=True, context={"request", request}
+                        fertilizers, many=True
                     ).data
                 }
             )
 
-        if not soil or not culture or not fertilizer:
+        if not disease or not culture or not fertilizer:
             return Response(
                 {
                     "error": "Please provide query params either `soil`,`culture` ,or `fertilizer` "
