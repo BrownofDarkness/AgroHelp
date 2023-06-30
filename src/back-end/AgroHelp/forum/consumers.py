@@ -80,7 +80,7 @@ class ForumConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async
     def save_forum_post_comment(
-        self, post: int, content: str, parent: int | None = None
+        self, post: int, content: str, parent = None
     ):
         user = self.scope["user"]
         forum = Forum.objects.get(id=int(self.room_name_id))
