@@ -26,8 +26,12 @@ class ParcelSerializer(serializers.GeoModelSerializer):
     class Meta:
         model = Parcel
         geo_field = "location"
-        fields = "__all__"
-
+        exclude = ('user',)
+    
+    def save(self, **kwargs):
+        user = self.context["request"].user
+        return super().save(user=user,**kwargs)
+    
     def get_cultures(self, obj: Parcel):
         cultures = Culture.objects.filter(parcel__parcel=obj)
         if cultures:
@@ -35,6 +39,7 @@ class ParcelSerializer(serializers.GeoModelSerializer):
                 cultures, many=True, context={"request": self.context["request"]}
             ).data
         return None
+    
 
 
 class _SoilAreaSerializer(serializers.GeoFeatureModelSerializer):

@@ -2,22 +2,20 @@ from django.shortcuts import render
 
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-
+from rest_framework.response import Response
+from rest_framework import status
 # from rest_framework.views
 
 from .serializers import (
-    ForumPostCommentListSerializer,
-    ForumPostCommentSerializer,
-    ForumCommentVoteSerializer,
-    ForumPostListSerializer,
-    ForumPostSerializer,
-    ForumListSerializer,
     ForumSerializer,
+    ForumListSerializer,
+    ForumCommentListSerializer,
+    ForumCommentSerializer,
 )
 
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Forum, ForumPost, ForumPostComment, ForumCommentVote
+from .models import Forum, ForumComment
 
 # Create your views here.
 
@@ -33,36 +31,33 @@ class ForumViewSet(ModelViewSet, GenericViewSet):
         if self.action in ["list", "retrieve"]:
             return ForumListSerializer
         return ForumSerializer
+    
+    def create(self, request, *args, **kwargs):
+        serializer =self.get_serializer(data=request.data,context={'request':request})
+        serializer.is_valid(raise_exception=True)
+        forum = serializer.save()
+
+        return Response(ForumListSerializer(forum,context={'request':request}).data, status=status.HTTP_201_CREATED)
 
     queryset = Forum.objects.all()
 
 
-class ForumPostViewSet(ModelViewSet, GenericViewSet):
+class ForumCommentViewSet(ModelViewSet, GenericViewSet):
     """
     This api helps to get post created in a forum
     """
 
     permission_classes = [IsAuthenticated]
-    queryset = ForumPost.objects.all()
+    queryset = ForumComment.objects.all()
 
     def get_serializer_class(self):
         if self.action in ["list", "retrieve"]:
-            return ForumPostListSerializer
+            return ForumCommentListSerializer
 
-        return ForumPostSerializer
+        return ForumCommentSerializer
+    def create(self, request, *args, **kwargs):
+        serializer =self.get_serializer(data=request.data,context={'request':request})
+        serializer.is_valid(raise_exception=True)
+        forum_comment = serializer.save()
 
-
-class ForumPostCommentViewSet(ModelViewSet, GenericViewSet):
-    serializer_class = ForumPostCommentSerializer
-    permission_classes = [IsAuthenticated]
-    queryset = ForumPostComment.objects.all()
-
-    def get_serializer_class(self):
-        if self.action in ["list", "retrieve"]:
-            return ForumPostCommentListSerializer
-        return ForumPostCommentSerializer
-
-
-class ForumCommentVoteViewSet(ModelViewSet, GenericViewSet):
-    serializer_class = ForumCommentVoteSerializer
-    queryset = ForumCommentVote.objects.all()
+        return Response(ForumCommentListSerializer(forum_comment,context={'request':request}).data, status=status.HTTP_201_CREATED)

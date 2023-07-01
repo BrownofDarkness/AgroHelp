@@ -1,26 +1,23 @@
 from django.contrib import admin
 
-from .models import Forum, ForumPost, ForumPostComment, ForumCommentVote
+from .models import Forum, ForumComment
 
 # Register your models here.
 
 
-class ForumPostInline(admin.TabularInline):
-    model = ForumPost
+class ForumCommentInline(admin.TabularInline):
+    model = ForumComment
     extra = 0
 
 
 @admin.register(Forum)
 class ForumAdmin(admin.ModelAdmin):
-    inlines = [ForumPostInline]
-    list_display = ("id", "description", "creator")
+    inlines = [ForumCommentInline]
+    list_display = ("id", "author", "content", "created_at")
 
 
-admin.site.register(ForumPostComment)
-
-
-@admin.register(ForumPost)
-class ForumPostAdmin(admin.ModelAdmin):
-    list_display = ["forum", "author", "title", "content", "created_at"]
+@admin.register(ForumComment)
+class ForumCommentAdmin(admin.ModelAdmin):
+    list_display = ["forum", "author", "parent", "content", "created_at"]
 
     list_filter = ["created_at", "forum"]

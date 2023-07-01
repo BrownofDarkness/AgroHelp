@@ -179,3 +179,5 @@ LEAFLET_CONFIG = {
     'DEFAULT_ZOOM': 4,
     'ATTRIBUTION_PREFIX': '<a target="_blank" href="https://github.com/BrownofDarkness">Powered By wilbrown</a>'
 }
+
+RABBITMQ_HOST='localhost'

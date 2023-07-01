@@ -164,3 +164,6 @@ REST_FRAMEWORK = {
 REDOC_SETTINGS = {
     'LAZY_RENDERING': False,
 }
+
+
+RABBITMQ_HOST='localhost'

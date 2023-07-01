@@ -12,6 +12,7 @@ from rest_framework.permissions import (
     IsAuthenticated,
     IsAdminUser,
 )
+from rest_framework.authentication import TokenAuthentication,SessionAuthentication
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from django.http import JsonResponse
@@ -47,11 +48,15 @@ from .models import (
     Fertilizer,
 )
 
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 User = get_user_model()
 
 
 class SoilViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Soil.objects.all()
+    authentication_classes = [TokenAuthentication,SessionAuthentication]
 
     def get_serializer_class(self, *args, **kwargs):
         if self.action in ["areas"]:
@@ -69,7 +74,8 @@ class SoilViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         soil_area = SoilArea.objects.filter(soil=instance)
 
         return Response(
-            SoilAreaSerializer(soil_area, many=True, context={"request": request}).data,
+            SoilAreaSerializer(soil_area, many=True, context={
+                               "request": request}).data,
             status=200,
         )
 
@@ -101,9 +107,10 @@ class ParcelViewSet(
 ):
     # serializer_class = ParcelSerializer
     permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication,SessionAuthentication]
 
     def get_serializer_class(self):
-        if self.action == "add_cultures":
+        if self.action in ["add_cultures","remove_cultures"]:
             return CulturesIdsSerializer
 
         return ParcelSerializer
@@ -141,12 +148,25 @@ class ParcelViewSet(
     def suggest_culture(self, request, *args, **kwargs):
         instance: Parcel = self.get_object()
 
-        soils = Soil.objects.filter(areas__polygon__intersects=instance.location)
+        soils = Soil.objects.filter(
+            areas__polygon__intersects=instance.location)
         cultures = Culture.objects.filter(soil_culture__soil__in=soils)
+        sugg = _CultureSerializer(cultures, many=True, context={"request": request}).data
+        results = []
+        for culture in sugg:
+            """
+            Here i will check if a user practise this culture
+            """
+            favorite = Culture.objects.filter(
+                parcel__culture__id=culture["id"], parcel__parcel =instance.id
+            ).exists()
+            data = {"culture": culture, "favorite": favorite}
+
+            results.append(data)
+        print(sugg)
+        
         # return Response(SoilSerializer(soils, many=True).data)
-        return Response(
-            _CultureSerializer(cultures, many=True, context={"request": request}).data
-        )
+        return Response(results)
 
     @action(methods=["POST"], detail=True)
     def add_cultures(self, request, *args, **kwargs):
@@ -159,7 +179,8 @@ class ParcelViewSet(
         if instance.user == request.user:
             for culture in cultures:
                 try:
-                    CultureParcel.objects.create(culture=culture, parcel=instance)
+                    CultureParcel.objects.create(
+                        culture=culture, parcel=instance)
                 except:
                     pass
             return Response(
@@ -167,6 +188,31 @@ class ParcelViewSet(
                 status=status.HTTP_201_CREATED,
             )
         return Response({"detail": "Not Allow"}, status=status.HTTP_403_FORBIDDEN)
+    @action(methods=["POST"], detail=True)
+    def remove_cultures(self,request, *args,**kwargs):
+        instance: Parcel = self.get_object()
+        serializer = CulturesIdsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        cultures = serializer.validated_data["ids"]
+        if instance.user == request.user:
+            for culture in cultures:
+                try:
+                    cult = CultureParcel.objects.filter(culture = culture, parcel = instance)
+                    cult.delete()
+                except:
+                    pass
+            return Response(
+                {"message": "Culture deleted succesfully"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        return Response({"detail": "Not Allow"}, status=status.HTTP_403_FORBIDDEN)
+
+    @action(methods=["GET"], detail=True)
+    def get_soils(self, request, *args, **kwargs):
+        instance: Parcel = self.get_object()
+        soils = Soil.objects.filter(areas__polygon__intersects=instance.location)
+        return Response(SoilSerializer(soils, many=True).data)
 
 
 class CultureViewSet(
@@ -177,6 +223,8 @@ class CultureViewSet(
     CreateModelMixin,
     GenericViewSet,
 ):
+    authentication_classes = [TokenAuthentication,SessionAuthentication]
+    
     def get_serializer_class(self):
         if self.action in ["list", "me", "retrieve"]:
             return CultureSerializer
@@ -187,6 +235,8 @@ class CultureViewSet(
         elif self.action in ["favorable_areas"]:
             return SoilAreaSerializer
         elif self.action in ["recommended"]:
+            return RecommendedSerializer
+        elif self.action in ["populars"]:
             return RecommendedSerializer
         else:
             return CultureSerializer
@@ -206,7 +256,8 @@ class CultureViewSet(
     @action(methods=["get"], detail=False)
     def me(self, request):
         # From this `me` action i will gtet all the cultures that a user practise
-        instance = Culture.objects.filter(parcel__parcel__user=self.request.user)
+        instance = Culture.objects.filter(
+            parcel__parcel__user=self.request.user)
         # instance = self.get_object()
         return Response(CultureSerializer(instance, many=True).data)
 
@@ -244,13 +295,15 @@ class CultureViewSet(
         This function will get the areas suitable for a crop to grow
         """
         instance = self.get_object()
-        culture_areas = SoilArea.objects.filter(soil__soil_culture__culture=instance)
+        culture_areas = SoilArea.objects.filter(
+            soil__soil_culture__culture=instance)
         return Response(SoilAreaSerializer(culture_areas, many=True).data)
 
     @action(methods=["GET"], detail=True)
     def fertilizers(self, request, *args, **kwargs):
         instance = self.get_object()
-        fertislizers = Fertilizer.objects.filter(culture_fertilizer__culture=instance)
+        fertislizers = Fertilizer.objects.filter(
+            culture_fertilizer__culture=instance)
         return Response(FertilizerSerializer(fertislizers, many=True).data)
 
     @action(methods=["GET"], detail=False)
@@ -260,7 +313,7 @@ class CultureViewSet(
         #     .select_related("parcel")
         #     .order_by("-num_parcels")
         # )
-        
+
         parcels = Parcel.objects.filter(user=request.user.id)
 
         popular_cultures = (
@@ -268,12 +321,11 @@ class CultureViewSet(
             .filter(culture_count__gt=0)
             .order_by("-culture_count")
         )
-        
+
         _popcultures = _CultureSerializer(
-                popular_cultures, many=True, context={"request": request}
+            popular_cultures, many=True, context={"request": request}
         ).data
-        
-        
+
         results = []
 
         for culture in _popcultures:
@@ -298,7 +350,8 @@ class CultureViewSet(
         parcels = Parcel.objects.filter(user=request.user.id)
 
         for parcel in parcels:
-            soils = Soil.objects.filter(areas__polygon__intersects=parcel.location)
+            soils = Soil.objects.filter(
+                areas__polygon__intersects=parcel.location)
             cultures = Culture.objects.filter(soil_culture__soil__in=soils)
             _cultures = _CultureSerializer(
                 cultures, many=True, context={"request": request}
@@ -346,6 +399,14 @@ class CultureViewSet(
         return Response(results)
 
 
+culture_param = openapi.Parameter(
+    "culture", openapi.IN_QUERY, description="culture name", type=openapi.TYPE_STRING
+)
+culture_response = openapi.Response(
+    "response description", AgriculturePracticeSerializer
+)
+
+
 class CulturePractiseViewSet(
     DestroyModelMixin,
     ListModelMixin,
@@ -355,13 +416,24 @@ class CulturePractiseViewSet(
 ):
     permission_classes = [IsAuthenticated]
 
+    serializer_class = AgriculturePracticeSerializer
+    authentication_classes = [TokenAuthentication,SessionAuthentication]
+
+
     def get_queryset(self):
-        # Here i will get the agricultural practise for a given culture passed in the
-        # query parameter as
+        """Here i will get the agricultural practise for a given culture passed in the
+        query parameter as culture"""
         culture = self.request.query_params.get("culture", None)
         if self.request.query_params.get("culture"):
             culture = Culture.objects.filter(name=culture)
         return AgriculturePractice.objects.all()
+
+    @swagger_auto_schema(
+        responses={200: AgriculturePracticeSerializer(many=True)},
+        manual_parameters=culture_param,
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class FertilizerViewSet(ModelViewSet, GenericViewSet):
@@ -370,20 +442,39 @@ class FertilizerViewSet(ModelViewSet, GenericViewSet):
     queryset = Fertilizer.objects.all()
 
     serializer_class = FertilizerSerializer
+    authentication_classes = [TokenAuthentication,SessionAuthentication]
+
+
+
+fertilizer_param = openapi.Parameter(
+    "fertilizer",
+    openapi.IN_QUERY,
+    description="fertilizer name",
+    type=openapi.TYPE_STRING,
+)
+
+disease_param = openapi.Parameter(
+    "disease", openapi.IN_QUERY, description="disease name", type=openapi.TYPE_STRING
+)
 
 
 class SearchViewSet(ViewSet):
     """
     This view help you search either culture , soil or fertilizer
-    you just need to provide query parameters ?soil=<soil_type> , ?culture=<culture_name> or ?fertilizer=<fertilizer_name>
+    you just need to provide only one query parameter either ?soil=<soil_type> or ?culture=<culture_name> or ?fertilizer=<fertilizer_name>
     """
 
     permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication,SessionAuthentication]
 
+
+    @swagger_auto_schema(
+        manual_parameters=[culture_param, fertilizer_param, disease_param]
+    )
     def list(self, request, *args, **kwargs):
         culture = request.query_params.get("culture", None)
 
-        soil = request.query_params.get("soil", None)
+        disease = request.query_params.get("disease", None)
 
         fertilizer = request.query_params.get("fertilizer", None)
 
@@ -392,19 +483,19 @@ class SearchViewSet(ViewSet):
 
             return Response(
                 {
-                    "results": CultureSerializer(
-                        cultures, many=True, context={"request", request}
+                    "results": _CultureSerializer(
+                        cultures, many=True
                     ).data,
                 }
             )
 
-        if soil:
-            soils = Soil.objects.filter(type__icontains=soil)
+        if disease:
+            diseases = CultureDiseaseAdvice.objects.filter(disease_name__icontains=disease)
 
             return Response(
                 {
-                    "results": SoilDetailSerializer(
-                        soils, many=True, context={"request", request}
+                    "results": CultureDiseaseSerializer(
+                        diseases, many=True
                     ).data
                 }
             )
@@ -414,12 +505,12 @@ class SearchViewSet(ViewSet):
             return Response(
                 {
                     "results": FertilizerSerializer(
-                        fertilizers, many=True, context={"request", request}
+                        fertilizers, many=True
                     ).data
                 }
             )
 
-        if not soil or not culture or not fertilizer:
+        if not disease or not culture or not fertilizer:
             return Response(
                 {
                     "error": "Please provide query params either `soil`,`culture` ,or `fertilizer` "

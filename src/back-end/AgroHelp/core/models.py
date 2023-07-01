@@ -96,6 +96,7 @@ class CultureDiseaseAdvice(models.Model):
     )
     image = models.ImageField(upload_to="disease/", blank=True, null=True)
     disease_name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
     solution = models.TextField()
 
     def __str__(self) -> str:
@@ -112,6 +113,7 @@ class Fertilizer(models.Model):
     composition = models.TextField()
     type = models.CharField(max_length=25, choices=TYPE)
     description = models.TextField()
+    image = models.ImageField(upload_to="fertilizers", blank=True, null=True)
 
     def __str__(self) -> str:
         return self.name

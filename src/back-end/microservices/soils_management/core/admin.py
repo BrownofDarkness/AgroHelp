@@ -7,6 +7,9 @@ from django.contrib import admin
 
 from .serializers import _SoilSerializer
 
+from .producer import publish
+import json
+
 # Register your models here.
 
 
@@ -14,6 +17,11 @@ from .serializers import _SoilSerializer
 class SoilAdmin(admin.ModelAdmin):
     list_display = ("id", "type", "composition")
     search_fields = ("type",)
+
+    @admin.action(description="Notify Culture and Parcel Service for the Soil Creation")
+    def notify_other_services(self, request, queryset):
+        for soil in queryset:
+            publish("soil_created", _SoilSerializer(soil).data)
 
 
 @admin.register(SoilCulture)
@@ -30,5 +38,17 @@ class SoilAreaAdmin(LeafletGeoAdmin):
 
 @admin.register(Culture)
 class CultureAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'image_preview']
-    readonly_fields = ['name', 'id', 'image']
+    list_display = ["id", "name", "image_preview"]
+    # readonly_fields = ["name", "id", "image"]
+    
+    
+    readonly_fields = [field.name for field in Culture._meta.fields]
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
