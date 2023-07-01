@@ -32,7 +32,7 @@ COPY . .
 
 RUN python manage.py makemigrations
 
-RUN python ./manage.py shell -c "import django;django.db.connection.cursor().execute('SELECT InitSpatialMetaData(1);')";
+# RUN python ./manage.py shell -c "import django;django.db.connection.cursor().execute('SELECT InitSpatialMetaData(1);')";
 
 RUN python manage.py migrate
 RUN python manage.py export_or_import_soils "import"
