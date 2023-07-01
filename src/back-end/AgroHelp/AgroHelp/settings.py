@@ -107,23 +107,23 @@ ASGI_APPLICATION = "AgroHelp.asgi.application"
 #     }
 # }
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.contrib.gis.db.backends.postgis",
-#         'NAME': env("DB_NAME",os.getenv("DB_NAME")),
-#         'USER': env("DB_USER",os.getenv("DB_USER")),
-#         'PASSWORD': env("DB_PASSWORD",os.getenv("DB_PASSWORD")),
-#         'HOST': env("DB_HOST",os.getenv("DB_HOST")),
-#         'PORT': env("DB_PORT",os.getenv("DB_PORT")),
-#     }
-# }
-DATABASES ={
-    "default": dj_database_url.parse(
-        env("DB_URL",os.getenv("DB_URL")),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+DATABASES = {
+    "default": {
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        'NAME': env("DB_NAME","agrohelp"),
+        'USER': env("DB_USER","ivantom"),
+        'PASSWORD': env("DB_PASSWORD","MXqzID300C3vorou1eFAFXtSwFsVXOtf"),
+        'HOST': env("DB_HOST","dpg-ciek9d5gkuvlk1ghub50-a"),
+        'PORT': env("DB_PORT",5432),
+    }
 }
+# DATABASES ={
+#     "default": dj_database_url.parse(
+#         env("DB_URL",os.getenv("DB_URL")),
+#         conn_max_age=600,
+#         conn_health_checks=True,
+#     )
+# }
 
 
 # Password validation
