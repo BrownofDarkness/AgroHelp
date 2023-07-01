@@ -117,7 +117,7 @@ ASGI_APPLICATION = "AgroHelp.asgi.application"
 #         'PORT': env("DB_PORT",os.getenv("DB_PORT")),
 #     }
 # }
-
+DATABASES = {}
 DATABASES['default'] = dj_database_url.parse(
     env("DB_URL",os.getenv("DB_URL")),
     conn_max_age=600,
