@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 
 import environ
-import os
+import os,dj_database_url
 from getenv import env
 
 # env = environ.Env()
