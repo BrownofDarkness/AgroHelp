@@ -10,9 +10,9 @@ User = get_user_model()
 
 
 class Soil(models.Model):
-    type = models.CharField(max_length=5000, unique=True)
+    type = models.TextField(unique=True)
     description = models.TextField(blank=True)
-    composition = models.CharField(max_length=10000)
+    composition = models.TextField()
 
     def __str__(self):
         return self.type
