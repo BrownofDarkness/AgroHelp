@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 
 import environ
-import os,dj_database_url
+import os
 # from getenv import env
 
 env = environ.Env()
@@ -107,19 +107,15 @@ ASGI_APPLICATION = "AgroHelp.asgi.application"
 #     }
 # }
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.contrib.gis.db.backends.postgis",
-#         'NAME': env("DB_NAME","agrohelp"),
-#         'USER': env("DB_USER","ivantom"),
-#         'PASSWORD': env("DB_PASSWORD","MXqzID300C3vorou1eFAFXtSwFsVXOtf"),
-#         'HOST': env("DB_HOST","dpg-ciek9d5gkuvlk1ghub50-a.oregon-postgres.render.com"),
-#         'PORT': env("DB_PORT",5432),
-#     }
-# }
-
-DATABASES ={
-    "default": dj_database_url.parse(env("DB_URL"))
+DATABASES = {
+    "default": {
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        'NAME': env("DB_NAME"),
+        'USER': env("DB_USER"),
+        'PASSWORD': env("DB_PASSWORD"),
+        'HOST': env("DB_HOST"),
+        'PORT': env("DB_PORT")
+    }
 }
 
 
