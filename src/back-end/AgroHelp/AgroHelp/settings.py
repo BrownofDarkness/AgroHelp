@@ -118,7 +118,6 @@ ASGI_APPLICATION = "AgroHelp.asgi.application"
 #     }
 # }
 
-print(env('DB_URL'))
 DATABASES ={
     "default": dj_database_url.parse(env("DB_URL"))
 }
