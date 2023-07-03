@@ -173,11 +173,6 @@ __pycache__
 *.py[cod]
 *$py.class
 
-# migrations/**
-**/migrations/**
-!**/migrations
-!**/migrations/__init__.py
-
 *.rdb
 celerybeat-schedule
 
