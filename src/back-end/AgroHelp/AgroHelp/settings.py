@@ -14,11 +14,11 @@ from pathlib import Path
 
 import environ
 import os,dj_database_url
-from getenv import env
+# from getenv import env
 
-# env = environ.Env()
+env = environ.Env()
 
-# environ.Env.read_env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -107,23 +107,21 @@ ASGI_APPLICATION = "AgroHelp.asgi.application"
 #     }
 # }
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.contrib.gis.db.backends.postgis",
-        'NAME': env("DB_NAME","agrohelp"),
-        'USER': env("DB_USER","ivantom"),
-        'PASSWORD': env("DB_PASSWORD","MXqzID300C3vorou1eFAFXtSwFsVXOtf"),
-        'HOST': env("DB_HOST","dpg-ciek9d5gkuvlk1ghub50-a.oregon-postgres.render.com"),
-        'PORT': env("DB_PORT",5432),
-    }
-}
-# DATABASES ={
-#     "default": dj_database_url.parse(
-#         env("DB_URL",os.getenv("DB_URL")),
-#         conn_max_age=600,
-#         conn_health_checks=True,
-#     )
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.contrib.gis.db.backends.postgis",
+#         'NAME': env("DB_NAME","agrohelp"),
+#         'USER': env("DB_USER","ivantom"),
+#         'PASSWORD': env("DB_PASSWORD","MXqzID300C3vorou1eFAFXtSwFsVXOtf"),
+#         'HOST': env("DB_HOST","dpg-ciek9d5gkuvlk1ghub50-a.oregon-postgres.render.com"),
+#         'PORT': env("DB_PORT",5432),
+#     }
 # }
+
+print(env('DB_URL'))
+DATABASES ={
+    "default": dj_database_url.parse(env("DB_URL"))
+}
 
 
 # Password validation
