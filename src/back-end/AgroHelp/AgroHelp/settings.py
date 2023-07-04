@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 
 import environ
-import os
-# from getenv import env
 
 env = environ.Env()
 
@@ -55,6 +53,7 @@ INSTALLED_APPS = [
     "rest_framework_gis",
     "rest_framework.authtoken",
     "leaflet",
+    "storages",
     # Local Apps
     "core",
     "accounts",
@@ -235,3 +234,13 @@ LEAFLET_CONFIG = {
     "DEFAULT_ZOOM": 5,
     "ATTRIBUTION_PREFIX": '<a target="_blank" href="https://github.com/tomdieu">Powered By ivantom</a>',
 }
+
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# aws settings
+
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME')
