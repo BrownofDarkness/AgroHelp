@@ -30,12 +30,15 @@ COPY . .
 
 # Set up the SQLite database
 
-RUN python manage.py makemigrations
+# RUN python manage.py makemigrations
 
-RUN python ./manage.py shell -c "import django;django.db.connection.cursor().execute('SELECT InitSpatialMetaData(1);')";
+# RUN python ./manage.py shell -c "import django;django.db.connection.cursor().execute('SELECT InitSpatialMetaData(1);')";
 
-RUN python manage.py migrate
+# RUN python manage.py migrate
+# RUN python manage.py export_or_import_soils "import"
 
+# RUN python manage.py admin_default_user
 # Expose the port the app runs on
 EXPOSE 8000
 
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

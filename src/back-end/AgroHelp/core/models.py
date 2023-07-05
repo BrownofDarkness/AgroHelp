@@ -10,9 +10,9 @@ User = get_user_model()
 
 
 class Soil(models.Model):
-    type = models.CharField(max_length=255, unique=True)
+    type = models.TextField(unique=True)
     description = models.TextField(blank=True)
-    composition = models.CharField(max_length=255)
+    composition = models.TextField()
 
     def __str__(self):
         return self.type
@@ -69,7 +69,7 @@ class CultureParcel(models.Model):
 
 
 class SoilArea(models.Model):
-    name = models.CharField(help_text="Name of the soil area", max_length=255)
+    name = models.CharField(help_text="Name of the soil area", max_length=5000)
     
     soil = models.ForeignKey(Soil, on_delete=models.CASCADE, related_name="areas")
     
@@ -94,7 +94,7 @@ class CultureDiseaseAdvice(models.Model):
     culture = models.ForeignKey(
         Culture, on_delete=models.CASCADE, related_name="culture_disease_advice"
     )
-    image = models.ImageField(upload_to="disease", blank=True, null=True)
+    image = models.ImageField(upload_to="disease/", blank=True, null=True)
     disease_name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     solution = models.TextField()

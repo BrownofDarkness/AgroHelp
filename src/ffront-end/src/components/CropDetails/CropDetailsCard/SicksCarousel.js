@@ -3,22 +3,27 @@ import Carousel from '../../shared/Carousel';
 import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import Card from '../../shared/Card/Card';
 import CardMedia from '../../shared/Card/CardMedia';
+import {useNavigation} from '@react-navigation/native';
+// import {SharedElement} from 'react-navigation-shared-element';
 import CardContent from '../../shared/Card/CardContent';
 import { colors, sizes, spacing } from '../../../constants/theme';
 import Icon from '../../shared/Icon';
 // import Rating from '../../shared/Rating/Rating';
+import {SharedElement} from 'react-navigation-shared-element';
 import CardFavoriteIcon from '../../shared/Card/CardFavoriteIcon';
 
 const CARD_HEIGHT = 200;
 
-const SicksCarousel = ({ sicks }) => {
+const SicksCarousel = ({sicks}) => {
+  const navigation = useNavigation();
   return (
     <ScrollView>
       <Carousel
         items={sicks}
         renderItem={({ item, style }) => {
           return (
-            <Card style={[styles.card, style]}>
+            <Card style={[styles.card, style]} >
+              
               <CardFavoriteIcon active={false} onPress={() => {}} />
               <CardMedia source={item.image} borderBottomRadius />
               <CardContent style={styles.content}>
