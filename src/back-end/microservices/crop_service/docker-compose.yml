@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+
+  crop_service:
+    image: agrohelp/crop_service
+    restart: unless-stopped
+    build:
+      context: .
+    volumes:
+      - .:/crop_service
+    ports:
+      - 8002:8002
+    container_name: crop_service
+    command: python manage.py runserver 0.0.0.0:8002
+    networks:
+      - bridge
+
+  # queue:
+  #   build:
+  #     context: .
+  #   command: 'python -u consumer.py'
+  #   depends_on:
+  #     - crop_service
+  #   restart: unless-stopped
+  #   container_name: crop_consumer
+  #   networks:
+  #     - bridge
+networks:
+  bridge:
+    driver: bridge
+    name: network

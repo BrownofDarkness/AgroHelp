@@ -1,5 +1,7 @@
 export default class ApiService {
-  static endPoint = "http://192.168.237.86:8000/api";
+  static endPoint = "http://192.168.106.86:8000/api";
+  // static endPoint = "http://192.168.194.86:8000/api";
+  // static endPoint = "http://192.168.100.90:8000/api";
 
   static async login(data) {
     const url = this.endPoint + "/account/auth/";
@@ -79,6 +81,28 @@ export default class ApiService {
 
   static async getCultures(token) {
     const url = this.endPoint + "/core/culture/";
+    const res = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${token}`,
+      },
+    });
+    return res;
+  }
+
+  static async getPopularCultures(token) {
+    const url = this.endPoint + "/core/culture/populars";
+    const res = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${token}`,
+      },
+    });
+    return res;
+  }
+
+  static async getRecommendedCultures(token) {
+    const url = this.endPoint + "/core/culture/recommended";
     const res = await fetch(url, {
       headers: {
         "Content-Type": "application/json",

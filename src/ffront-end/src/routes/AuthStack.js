@@ -9,13 +9,21 @@ import Contact from '../screens/Contact-us';
 import Rate from '../screens/Rate';
 import Test from '../screens/Test';
 import AddParcelScreen from '../screens/Home/Parcel/AddParcel';
-import DescriptionPage from '../screens/DescriptionPage';
+import Weather from "../screens/Weather";
 import {NavigationContainer} from '@react-navigation/native';
 import TabNavigator from "../navigations/TabNavigator";
 import {StatusBar} from 'react-native';
 import CropDetailsScreen from '../screens/CropDetailsScreen';
 import MainNavigator from "../navigations/MainNavigator";
 import HomeNavigator from "../navigations/HomeNavigator";
+import HomeScreen from "../screens/HomeScreen";
+import LogoutScreen from "../screens/LogoutScreen";
+import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
+import Notification from "../screens/Home/Notification/Notification";
+import Parcels from "../screens/Parcels";
+import Describe from "../screens/Describe";
+import Popular from "../components/Home/Popular";
+import PopularScreen from "../screens/PopularScreen";
 // import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
 
 const Stack = createStackNavigator();
@@ -24,6 +32,7 @@ const AuthRoutes = ({ navigation }) => {
   <StatusBar hidden />
   return (
     <Stack.Navigator>
+ 
       <Stack.Screen
         name="Welcome"
         component={WelcomeScreen}
@@ -43,6 +52,21 @@ const AuthRoutes = ({ navigation }) => {
       />
 
       <Stack.Screen
+          name="Tab"
+          component={TabNavigator}
+          options={{
+            headerShown: false,
+            useNativeDriver: true,
+            gestureEnabled: false,
+          }}
+        />
+        
+      <Stack.Screen 
+      name="ForgotPassword" 
+      component={ForgotPasswordScreen} 
+      options={{ headerShown: false }} />
+
+      <Stack.Screen
           name="AddParcelScreen"
           component={AddParcelScreen}
            options={{
@@ -51,21 +75,13 @@ const AuthRoutes = ({ navigation }) => {
           //   gestureEnabled: false,
            }}
         />
+
+        
         
 
         <Stack.Screen
           name="Root"
           component={MainNavigator}
-          options={{
-            headerShown: false,
-            useNativeDriver: true,
-            gestureEnabled: false,
-          }}
-        />
-
-      <Stack.Screen
-          name="Tab"
-          component={TabNavigator}
           options={{
             headerShown: false,
             useNativeDriver: true,
@@ -97,10 +113,50 @@ const AuthRoutes = ({ navigation }) => {
           //   gestureEnabled: false,
            }}
         />
-        
+
+        <Stack.Screen
+          name="HomeScreen"
+          component={HomeScreen}
+           options={{
+             headerShown: false,
+          //   useNativeDriver: true,
+          //   gestureEnabled: false,
+           }}
+        />
+
+        <Stack.Screen
+          name="Notification"
+          component={Notification}
+           options={{
+             headerShown: false,
+          //   useNativeDriver: true,
+          //   gestureEnabled: false,
+           }}
+        />
+
         <Stack.Screen
           name="ChatScreen"
           component={ChatScreen}
+           options={{
+             headerShown: false,
+          //   useNativeDriver: true,
+          //   gestureEnabled: false,
+           }}
+        />
+
+         <Stack.Screen
+          name="Popular"
+          component={Popular}
+           options={{
+             headerShown: false,
+          //   useNativeDriver: true,
+          //   gestureEnabled: false,
+           }}
+        />
+
+        <Stack.Screen
+          name="PopularScreen"
+          component={PopularScreen}
            options={{
              headerShown: false,
           //   useNativeDriver: true,
@@ -148,13 +204,43 @@ const AuthRoutes = ({ navigation }) => {
         />
 
         <Stack.Screen
-          name="DescriptionPage"
-          component={DescriptionPage}
+          name="Weather"
+          component={Weather}
           options={{
             headerShown: false,
             useNativeDriver: true,
             gestureEnabled: false,
           }}
+        />
+
+        <Stack.Screen
+          name="Describe"
+          component={Describe}
+          options={{
+            headerShown: false,
+            useNativeDriver: true,
+            gestureEnabled: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="Parcels"
+          component={Parcels}
+          options={{
+            headerShown: false,
+            useNativeDriver: true,
+            gestureEnabled: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="LogoutScreen"
+          component={LogoutScreen}
+          // options={{
+          //   headerShown: false,
+          //   useNativeDriver: true,
+          //   gestureEnabled: false,
+          // }}
         />
     </Stack.Navigator>
   );

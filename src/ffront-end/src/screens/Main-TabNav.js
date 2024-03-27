@@ -1,23 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 // import { Image } from 'react-native';
 
 const Menu = () => {
   const navigation = useNavigation();
   const [selectedButton, setSelectedButton] = useState(null);
-  // const [weather, setWeather] = useState(null);
+ 
+  const [weather, setWeather] = useState(null);
 
-  // useEffect(() => {
-  //   // Fetch weather data from API based on user's location
-  //   // Replace 'API_KEY' and 'latitude,longitude' with the appropriate values
-  //   fetch(`https://api.weatherapi.com/v1/current.json?key=API_KEY&q=latitude,longitude`)
-  //     .then(response => response.json())
-  //     .then(data => setWeather(null))
-  //     .catch(error => console.error(error));
-  // }, []);
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        // Replace with your latitude and longitude values
+        const latitude = 3.848,
+          longitude = 11.502;
+        const apiKey = 'acbc1629d4192a8cb3c8e6c6abd33fe0';
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+
+        const response = await axios.get(apiUrl);
+        setWeather(response.data);
+      } catch (error) {
+        console.log('Error fetching weather data:', error);
+      }
+    };
+
+    fetchWeather();
+  }, []);
 
   const handleButtonPress = (screenName) => {
     navigation.navigate(screenName);
@@ -27,6 +40,7 @@ const Menu = () => {
   const handleBackPress = () => {
     navigation.goBack();
   };
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -59,8 +73,15 @@ const Menu = () => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.button, selectedButton === 'contact' && styles.selectedButton]}
-        onPress={() => handleButtonPress('contact')}
+        style={[styles.button, selectedButton === 'Parcels' && styles.selectedButton]}
+        onPress={() => handleButtonPress('Parcels')}
+      >
+        <Text style={styles.buttonText}>Choose Parcel</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, selectedButton === 'Contact' && styles.selectedButton]}
+        onPress={() => handleButtonPress('Contact')}
       >
         <Text style={styles.buttonText}>Contact Us</Text>
       </TouchableOpacity>
@@ -73,32 +94,44 @@ const Menu = () => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.button, selectedButton === 'Test' && styles.selectedButton]}
-        onPress={() => handleButtonPress('Test')}
+        style={[styles.button, selectedButton === 'Weather' && styles.selectedButton]}
+        onPress={() => handleButtonPress('Weather')}
       >
-        <Text style={styles.buttonText}>Test</Text>
+        <Text style={styles.buttonText}>Weather Forecast</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.button, selectedButton === 'DescriptionPage' && styles.selectedButton]}
-        onPress={() => handleButtonPress('DescriptionPage')}
+        style={[styles.button, selectedButton === 'LogoutScreen' && styles.selectedButton]}
+        onPress={() => handleButtonPress('LogoutScreen')}
+        // {isLoggedIn && <Button title="Logout" onPress={handleLogout} />}
       >
-        <Text style={styles.buttonText}>Test Description</Text>
+        <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
 
 
+
    {/* <Image source={require('./assets/weather-image.png')} style={styles.weatherImage} /> */}
-      <View style={styles.weatherContainer}>
+      {/* <View style={styles.weatherContainer}>
           <Text style={styles.weatherText}>The weather in your area now is:</Text>
           <Text style={styles.weatherText}>10°C</Text>
-        </View>
+        </View> */}
+      {weather ? (
+        <>
+          <Text>Location: {weather?.name}</Text>
+          <Text>Temperature: {weather?.main?.temp}°C</Text>
+          <Text>Description: {weather?.weather[0].description}</Text>
 
-      {/* {weather && (
-        <View style={styles.weatherContainer}>
-          <Text style={styles.weatherText}>The weather in your area now is:</Text>
-          <Text style={styles.weatherText}>{weather.current.temp_c}°C</Text>
-        </View>
-      )} */}
+          {/* <Image 
+           style={styles.weatherImage}
+           source={{
+            uri: `http://openweathermap.org/img/wn/${current.icon}@4x.png`,
+           }} 
+          
+          /> */}
+        </>
+      ) : (
+        <Text>Loading weather data ...</Text>
+      )}
     </ScrollView>
   );
 };
@@ -112,11 +145,17 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 12,
+    marginTop: 20,
+    color: '#fff',
+    // backgroundColor: '#000',
+    borderRadius: 20,
+    padding: 10,
   },
   heading: {
     fontSize: 24,
     marginLeft: 120,
+    marginTop: 30,
   },
   button: {
     backgroundColor: '#fafaf1',
@@ -133,7 +172,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
   },
   weatherContainer: {
-    marginTop: 200,
+    marginTop: 170,
     alignItems: 'center',
   },
   weatherText: {
@@ -141,124 +180,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  // weatherImage: {
-  //   width: 50,
-  //   height: 50,
-  //   resizeMode: 'contain',
-  // },
+  weatherImage: {
+    width: 300,
+    height: 250,
+    resizeMode: 'contain',
+  },
 });
 
 export default Menu;
-
-
-
-
-
-
-
-
-// import React, { useEffect, useState } from 'react';
-// import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-// import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-// import { faSun, faMoon, faCloud, faCloudRain, faBolt, faSnowflake, faSmog, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-
-// const Menu = () => {
-//   const [weather, setWeather] = useState(null);
-
-//   useEffect(() => {
-//     fetchWeatherData();
-//   }, []);
-
-//   const fetchWeatherData = () => {
-//     // Fetch weather data using an API
-//     fetch('https://api.openweathermap.org/data/2.5/weather?q={YOUR_LOCATION}&appid={YOUR_API_KEY}&units=metric')
-//       .then(response => response.json())
-//       .then(data => {
-//         setWeather(null);// replace with "data" to get user weather
-//       })
-//       .catch(error => {
-//         console.error('Error:', error);
-//       });
-//   };
-
-//   const getWeatherIcon = (iconCode) => {
-//     // Icon mapping logic goes here
-//   };
-
-//   return (
-//     <ScrollView contentContainerStyle={styles.container}>
-//       {/* <Text style={styles.heading}>Menu</Text> */}
-
-//       <TouchableOpacity style={styles.button}>
-//         <Text style={styles.buttonText}>Button 1</Text>
-//       </TouchableOpacity>
-
-//       <TouchableOpacity style={styles.button}>
-//         <Text style={styles.buttonText}>Button 2</Text>
-//       </TouchableOpacity>
-
-//       <TouchableOpacity style={styles.button}>
-//         <Text style={styles.buttonText}>Button 3</Text>
-//       </TouchableOpacity>
-
-//       <TouchableOpacity style={styles.button}>
-//         <Text style={styles.buttonText}>Button 4</Text>
-//       </TouchableOpacity>
-
-//       <TouchableOpacity style={styles.button}>
-//         <Text style={styles.buttonText}>Button 5</Text>
-//       </TouchableOpacity>
-
-//       {weather && (
-//         <View style={styles.weather}>
-//           <Text style={styles.weatherHeading}>Weather</Text>
-//           <FontAwesomeIcon icon={getWeatherIcon(weather.weather[0].icon)} style={styles.weatherIcon} />
-//           <Text style={styles.weatherInfo}>Temperature: {weather.main.temp}°C</Text>
-//         </View>
-//       )}
-//     </ScrollView>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 20,
-//     backgroundColor: '#f2f2f2',
-//   },
-//   heading: {
-//     fontSize: 24,
-//     marginBottom: 20,
-//   },
-//   button: {
-//     backgroundColor: '#f2f2f2',
-//     borderRadius: 5,
-//     padding: 10,
-//     marginBottom: 10,
-//   },
-//   buttonText: {
-//     fontSize: 16,
-//     color: '#14321a',
-//     textAlign: 'center',
-//   },
-//   weather: {
-//     marginTop: 20,
-//     alignItems: 'center',
-//     backgroundColor: '#e8e8e8',
-//     padding: 20,
-//     borderRadius: 5,
-//   },
-//   weatherHeading: {
-//     fontSize: 24,
-//     marginBottom: 10,
-//   },
-//   weatherIcon: {
-//     fontSize: 48,
-//     marginBottom: 10,
-//   },
-//   weatherInfo: {
-//     fontSize: 16,
-//   },
-// });
-
-// export default Menu;

@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, ImageBackground } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Button } from "../../components";
 import AgriIcon from "../../../assets/agri.jpg";
+import { Ionicons } from '@expo/vector-icons';
 
 const options = [
   {
@@ -37,12 +38,14 @@ export default function WelcomeScreen({ navigation }) {
               key={index}
               style={{ flexDirection: "row", margin: 2, gap: 10 }}
             >
-              <Icon
+              {/* <Icon
                 style={{ marginLeft: 20 }}
-                name="check"
-                size={22}
+                name=""
+                size={25}
                 color={"#02690C"}
-              />
+              /> */}
+              <Ionicons name="checkmark" size={16} color="#02690C" 
+              marginBottom={15}/>
               <Text style={{ fontSize: 20 }}>{name}</Text>
             </View>
           ))}

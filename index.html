@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .weather-card {
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 300px;
+      margin-bottom: 20px;
+    }
+
+    .sunny .icon i {
+      font-size: 48px;
+      color: #ffcc00;
+      margin-bottom: 10px;
+    }
+
+    .rainy .icon i {
+      font-size: 48px;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    .weather-details h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #343a40;
+    }
+
+    .temperature {
+      font-size: 48px;
+      font-weight: bold;
+      color: #343a40;
+    }
+
+    .description {
+      color: #868e96;
+    }
+
+    .chart-container {
+      max-width: 500px;
+    }
+
+    .loader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .loader .spinner {
+      border: 16px solid #f3f3f3;
+      border-top: 16px solid #3498db;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="loader">
+      <div class="spinner"></div>
+    </div>
+    <div class="weather-card" id="weatherCard">
+      <div class="icon">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+      <div class="weather-details">
+        <h2>Yaounde</h2>
+        <p class="temperature"></p>
+        <p class="description"></p>
+      </div>
+      <button class="toggle-button">Toggle Rainy Temperature</button>
+    </div>
+    <div class="chart-container">
+      <canvas id="weather-chart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // Update the weather card with the fetched data
+    function updateWeatherCard(data) {
+      const weatherCard = document.getElementById('weatherCard');
+      const iconElement = weatherCard.querySelector('.icon i');
+      const temperatureElement = weatherCard.querySelector('.temperature');
+      const descriptionElement = weatherCard.querySelector('.description');
+
+      // Update classes based on weather condition
+      if (data.description === 'Sunny') {
+        weatherCard.classList.remove('rainy');
+        weatherCard.classList.add('sunny');
+        iconElement.className = 'fas fa-sun';
+        iconElement.style.color = '#ffcc00';
+        temperatureElement.style.color = '#ffcc00';
+      } else {
+        weatherCard.classList.remove('sunny');
+        weatherCard.classList.add('rainy');
+        iconElement.className = 'fas fa-cloud-showers-heavy';
+        iconElement.style.color = '#007bff';
+        temperatureElement.style.color = '#007bff';
+      }
+
+      // Update temperature and description
+      temperatureElement.textContent = data.temperature;
+      descriptionElement.textContent = data.description;
+    }
+
+    // Function to toggle the temperature between sunny and rainy
+    function toggleTemperature() {
+      const weatherCard = document.getElementById('weatherCard');
+      const temperatureElement = weatherCard.querySelector('.temperature');
+      const descriptionElement = weatherCard.querySelector('.description');
+
+      if (weatherCard.classList.contains('sunny')) {
+        temperatureElement.textContent = '15°C';
+        descriptionElement.textContent = 'Rainy';
+        weatherCard.classList.remove('sunny');
+        weatherCard.classList.add('rainy');
+      } else {
+        temperatureElement.textContent = '25°C';
+        descriptionElement.textContent = 'Sunny';
+        weatherCard.classList.remove('rainy');
+        weatherCard.classList.add('sunny');
+      }
+    }
+
+    // Update the weather chart with hourly weather data
+    function updateWeatherChart(hourlyWeather) {
+      const labels = hourlyWeather.map(data => data.time);
+      const temperatures = hourlyWeather.map(data => parseFloat(data.temperature));
+
+      const ctx = document.getElementById('weather-chart').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Temperature (°C)',
+            data: temperatures,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2,
+            pointRadius: 3,
+            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointBorderColor: '#fff',
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointHoverBorderColor: '#fff',
+            pointHitRadius: 10,
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              grid: {
+                display: false
+              }
+            },
+            y: {
+              grid: {
+                display: true,
+                color: 'rgba(0, 0, 0, 0.1)',
+                borderDash: [5, 5]
+              },
+              ticks: {
+                fontColor: '#868e96'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    // Fetch weather data from an API
+    function fetchWeatherData() {
+      // Replace 'YOUR_API_KEY' with your actual API key
+      const apiKey = 'acbc1629d4192a8cb3c8e6c6abd33fe0';
+      const city = 'Yaounde';
+      const country = 'Cameroon';
+      const apiUrl = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city},${country}`;
+
+      setTimeout(() => {
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            const weatherData = {
+              city: data.location.name,
+              temperature: `${data.current.temp_c}°C`,
+              description: data.current.condition.text,
+              hourlyWeather: [
+                { time: '10:00', temperature: `${data.current.temp_c - 5}°C` },
+                { time: '11:00', temperature: `${data.current.temp_c - 3}°C` },
+                { time: '12:00', temperature: `${data.current.temp_c - 2}°C` },
+                { time: '13:00', temperature: `${data.current.temp_c}°C` },
+                { time: '14:00', temperature: `${data.current.temp_c + 1}°C` },
+                { time: '15:00', temperature: `${data.current.temp_c + 2}°C` },
+                { time: '16:00', temperature: `${data.current.temp_c + 3}°C` },
+                { time: '17:00', temperature: `${data.current.temp_c + 4}°C` },
+                { time: '18:00', temperature: `${data.current.temp_c + 5}°C` },
+                { time: '19:00', temperature: `${data.current.temp_c + 4}°C` },
+                { time: '20:00', temperature: `${data.current.temp_c + 3}°C` }
+              ]
+            };
+
+            updateWeatherCard(weatherData);
+            updateWeatherChart(weatherData.hourlyWeather);
+          })
+          .catch(error => {
+            console.error('Error fetching weather data:', error);
+          });
+      }, 5000); // Delayed by 5 seconds (5000 milliseconds)
+
+    }
+
+    // Call the fetchWeatherData function to fetch and display weather data
+    fetchWeatherData();
+
+    // Add event listener to the toggle button
+    const toggleButton = document.querySelector('.toggle-button');
+    toggleButton.addEventListener('click', toggleTemperature);
+  </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .weather-card {
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 300px;
+      margin-bottom: 20px;
+    }
+
+    .sunny .icon i {
+      font-size: 48px;
+      color: #ffcc00;
+      margin-bottom: 10px;
+    }
+
+    .rainy .icon i {
+      font-size: 48px;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    .weather-details h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #343a40;
+    }
+
+    .temperature {
+      font-size: 48px;
+      font-weight: bold;
+      color: #343a40;
+    }
+
+    .description {
+      color: #868e96;
+    }
+
+    .chart-container {
+      max-width: 500px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="weather-card sunny">
+      <div class="icon">
+        <i class="fas fa-sun"></i>
+      </div>
+      <div class="weather-details">
+        <h2>London</h2>
+        <p class="temperature">25°C</p>
+        <p class="description">Sunny</p>
+      </div>
+      <button class="toggle-button">Toggle Rainy Temperature</button>
+    </div>
+    <div class="chart-container">
+      <canvas id="weather-chart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // Replace this section with API integration to fetch weather data dynamically
+    // Example static data
+    let weatherData = {
+      city: "London",
+      temperature: "25°C",
+      description: "Sunny",
+      hourlyWeather: [
+        { time: "10:00", temperature: "20°C" },
+        { time: "11:00", temperature: "22°C" },
+        { time: "12:00", temperature: "24°C" },
+        { time: "13:00", temperature: "25°C" },
+        { time: "14:00", temperature: "26°C" },
+        { time: "15:00", temperature: "27°C" },
+        { time: "16:00", temperature: "26°C" },
+        { time: "17:00", temperature: "24°C" },
+        { time: "18:00", temperature: "22°C" },
+        { time: "19:00", temperature: "21°C" },
+        { time: "20:00", temperature: "20°C" }
+      ]
+    };
+
+    // Update the weather card with the fetched data
+    function updateWeatherCard(data) {
+      const weatherCard = document.querySelector('.weather-card');
+      const iconElement = document.querySelector('.icon i');
+      const temperatureElement = document.querySelector('.temperature');
+      const descriptionElement = document.querySelector('.description');
+
+      // Update classes based on weather condition
+      if (data.description === 'Sunny') {
+        weatherCard.classList.remove('rainy');
+        weatherCard.classList.add('sunny');
+        iconElement.className = 'fas fa-sun';
+        iconElement.style.color = '#ffcc00';
+        temperatureElement.style.color = '#ffcc00';
+      } else {
+        weatherCard.classList.remove('sunny');
+        weatherCard.classList.add('rainy');
+        iconElement.className = 'fas fa-cloud-showers-heavy';
+        iconElement.style.color = '#007bff';
+        temperatureElement.style.color = '#007bff';
+      }
+
+      // Update temperature and description
+      temperatureElement.textContent = data.temperature;
+      descriptionElement.textContent = data.description;
+    }
+
+    // Function to toggle the temperature between sunny and rainy
+    function toggleTemperature() {
+      if (weatherData.description === "Sunny") {
+        weatherData.temperature = "15°C";
+        weatherData.description = "Rainy";
+      } else {
+        weatherData.temperature = "25°C";
+        weatherData.description = "Sunny";
+      }
+
+      updateWeatherCard(weatherData);
+      updateWeatherChart(weatherData.hourlyWeather);
+    }
+
+    // Update the weather chart with hourly weather data
+    function updateWeatherChart(hourlyWeather) {
+      const labels = hourlyWeather.map(data => data.time);
+      const temperatures = hourlyWeather.map(data => parseFloat(data.temperature));
+
+      const ctx = document.getElementById('weather-chart').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Temperature (°C)',
+            data: temperatures,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2,
+            pointRadius: 3,
+            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointBorderColor: '#fff',
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointHoverBorderColor: '#fff',
+            pointHitRadius: 10,
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              grid: {
+                display: false
+              }
+            },
+            y: {
+              grid: {
+                display: true,
+                color: 'rgba(0, 0, 0, 0.1)',
+                borderDash: [5, 5]
+              },
+              ticks: {
+                fontColor: '#868e96'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    // Call the updateWeatherCard function with the weather data
+    updateWeatherCard(weatherData);
+
+    // Add event listener to the toggle button
+    const toggleButton = document.querySelector('.toggle-button');
+    toggleButton.addEventListener('click', toggleTemperature);
+
+    // Initialize the weather chart
+    updateWeatherChart(weatherData.hourlyWeather);
+  </script>
+</body>
+
+</html> -->
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .weather-card {
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 300px;
+    }
+
+    .sunny .icon i {
+      font-size: 48px;
+      color: #ffcc00;
+      margin-bottom: 10px;
+    }
+
+    .rainy .icon i {
+      font-size: 48px;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    .weather-details h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #343a40;
+    }
+
+    .temperature {
+      font-size: 48px;
+      font-weight: bold;
+      color: #343a40;
+    }
+
+    .description {
+      color: #868e96;
+    }
+
+    .toggle-button {
+      margin-top: 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="weather-card sunny">
+      <div class="icon">
+        <i class="fas fa-sun"></i>
+      </div>
+      <div class="weather-details">
+        <h2>London</h2>
+        <p class="temperature">25°C</p>
+        <p class="description">Sunny</p>
+      </div>
+      <button class="toggle-button">Toggle Rainy Temperature</button>
+    </div>
+  </div>
+
+  <script>
+    // Replace this section with API integration to fetch weather data dynamically
+    // Example static data
+    let weatherData = {
+      city: "London",
+      temperature: "25°C",
+      description: "Sunny"
+    };
+
+    // Update the weather card with the fetched data
+    function updateWeatherCard(data) {
+      const weatherCard = document.querySelector('.weather-card');
+      const iconElement = document.querySelector('.icon i');
+      const temperatureElement = document.querySelector('.temperature');
+      const descriptionElement = document.querySelector('.description');
+
+      // Update classes based on weather condition
+      if (data.description === 'Sunny') {
+        weatherCard.classList.remove('rainy');
+        weatherCard.classList.add('sunny');
+        iconElement.className = 'fas fa-sun';
+        iconElement.style.color = '#ffcc00';
+      } else {
+        weatherCard.classList.remove('sunny');
+        weatherCard.classList.add('rainy');
+        iconElement.className = 'fas fa-cloud-showers-heavy';
+        iconElement.style.color = '#007bff';
+      }
+
+      // Update temperature and description
+      temperatureElement.textContent = data.temperature;
+      descriptionElement.textContent = data.description;
+    }
+
+    // Function to toggle the temperature between sunny and rainy
+    function toggleTemperature() {
+      if (weatherData.description === "Sunny") {
+        weatherData.temperature = "15°C";
+        weatherData.description = "Rainy";
+      } else {
+        weatherData.temperature = "25°C";
+        weatherData.description = "Sunny";
+      }
+
+      updateWeatherCard(weatherData);
+    }
+
+    // Call the updateWeatherCard function with the weather data
+    updateWeatherCard(weatherData);
+
+    // Add event listener to the toggle button
+    const toggleButton = document.querySelector('.toggle-button');
+    toggleButton.addEventListener('click', toggleTemperature);
+  </script>
+</body>
+
+</html> -->

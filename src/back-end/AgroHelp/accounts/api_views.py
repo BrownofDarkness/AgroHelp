@@ -20,12 +20,14 @@ from .serializers import (
     UpdatePasswordSerializer,
     PasswordResetSerializer,
 )
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import action
 from rest_framework.generics import CreateAPIView
 
 User = get_user_model()
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginViewSet(CreateModelMixin, GenericViewSet):
     serializer_class = LoginSerializer
     permission_classes = [AllowAny,]

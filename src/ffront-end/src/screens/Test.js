@@ -1,17 +1,32 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useAuth } from '../context/AuthContext';
+import ApiService from '../utils/ApiService';
 
 const Test = () => {
   const navigation = useNavigation();
+  const route = useRoute()
+  const {parcel} = route.params;
+  const {token} = useAuth()
+  const [suggestedCultures,setSuggestedCultures] = useState([])
   const [showPopup, setShowPopup] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-
+  console.log(route.params)
   const handleYesButtonPress = () => {
     // Redirect to AddParcel screen
     // Implement navigation for the Add Parcel Screen 
     navigation.navigate('AddParcelScreen');
   };
+
+  useEffect(()=>{
+    if(parcel){
+
+      ApiService.suggestCulturesToParcel(parcel.id,token).then(res=>res.json()).then(data=>{
+        setSuggestedCultures(data);
+      }).catch(err=>console.log(err.message))
+    }
+  },[])
 
   const handleNoButtonPress = () => {
     setShowPopup(false);
@@ -20,13 +35,13 @@ const Test = () => {
       setShowSuccessPopup(false);
       // Redirect to Home screen after 6 seconds
       navigation.navigate('HomeScreen');
-    }, 6000);
+    }, 5000);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.heading}>Soil Characteristics in chosen Area</Text>
-      <Text style={styles.listHeading}>Below are some characteristics in relation to the soils found in YOUR_AREA</Text>
+      <Text style={styles.listHeading}>Below are some characteristics in relation to the soils found in {parcel?.name}</Text>
       <View style={styles.listContainer}>
          <Text style={styles.listItem}>- Rich loamy soil with excellent drainage.</Text>
          <Text style={styles.listItem}>- High organic content, promoting healthy plant growth.</Text>
@@ -41,10 +56,13 @@ const Test = () => {
       </View>
       <Text style={styles.heading}>Best growing crops</Text>
       <View style={styles.listContainer}>
-         <Text style={styles.listItem}>- Maize</Text>
-         <Text style={styles.listItem}>- Beans</Text>
+        {suggestedCultures && suggestedCultures.map(culture=>(
+
+         <Text key={culture.id} style={styles.listItem}>- {culture.name}</Text>
+        ))}
+         {/* <Text style={styles.listItem}>- Beans</Text>
          <Text style={styles.listItem}>- Cassava</Text>
-         <Text style={styles.listItem}>- Tomatoes</Text>
+         <Text style={styles.listItem}>- Tomatoes</Text> */}
       </View>
       <TouchableOpacity style={styles.button} onPress={() => setShowPopup(true)}>
         <Text style={styles.buttonText}>OK</Text>

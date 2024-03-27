@@ -34,9 +34,11 @@ const RegisterScreen = ({ navigation }) => {
       .then((data) => {
         console.log(data);
         alert("Account Created");
+        navigation.navigate("Login", { screen: "Login" });
       })
       .catch((err) => {
         setError(err.message);
+        console.log(err)
       });
   };
 

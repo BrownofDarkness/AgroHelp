@@ -79,7 +79,7 @@ class ForumConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({"message": data}))
 
     @sync_to_async
-    def save_forum_comment(self, forum: int, content: str, parent: int | None = None):
+    def save_forum_comment(self, forum: int, content: str, parent= None):
         user = self.scope["user"]
         forum = Forum.objects.get(id=int(self.room_name_id))
         if(parent == None):

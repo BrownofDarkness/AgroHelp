@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState("X");
+  const [token, setToken] = useState('9d7c08e48ac7ff93a6566c07920fb497d6a0cece');
 
   useEffect(() => {
     (async () => {

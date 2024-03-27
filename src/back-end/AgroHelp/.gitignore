@@ -6,11 +6,6 @@ e# Created by https://www.toptal.com/developers/gitignore/api/django
 *.pot
 *.pyc
 __pycache__/
-core/management/__pycache__
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-media
 
 # If your build process includes running collect
 # static, then you probably don't need or want to include staticfiles/
@@ -154,29 +149,17 @@ dmypy.json
 cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
-.vercel
 
 ./env
 /env/
 env/
-makefile
 
-^db.sqlite3$
-./db.sqlite3
-*.sqlite3
-
-other/
 
 # Byte-compiled / optimized / DLL files
 __pycache__
 **/__pycache__/**
 *.py[cod]
 *$py.class
-
-# migrations/**
-**/migrations/**
-!**/migrations
-!**/migrations/__init__.py
 
 *.rdb
 celerybeat-schedule
@@ -193,3 +176,5 @@ venv
 *media*
 .idea
 .sqlite3
+
+**/.env

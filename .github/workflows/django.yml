@@ -33,9 +33,7 @@ jobs:
           python -m pip install --upgrade pip
           cd src/back-end/AgroHelp
           pip install -r requirements.txt
-          python manage.py makemigrations
-          python ./manage.py shell -c "import django;django.db.connection.cursor().execute('SELECT InitSpatialMetaData(1);')";
-          python manage.py migrate
+
       - name: Run Tests
         run: |
           cd src/back-end/AgroHelp
